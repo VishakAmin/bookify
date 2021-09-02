@@ -4,10 +4,12 @@ import SignUp from './components/SignUp';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Books from './components/Books';
 import ConfirmSignUp from './components/ConfirmSignUp';
+import Navbar from './components/UI/Navbar';
 
 function App() {
   return (
     <Router>
+      <Navbar/>
       <Switch>  
         <Route path="/signin">
           <SignIn/>
