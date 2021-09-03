@@ -1,0 +1,6 @@
+type Todo @model {
+  id: ID!
+  book_name: String!
+  description: String
+  published: String
+}
