@@ -5,26 +5,30 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Books from './components/Books';
 import ConfirmSignUp from './components/ConfirmSignUp';
 import Navbar from './components/UI/Navbar';
+import { AuthProvider } from './components/contexts/AuthContext';
+import PrivateRoute from './components/PrivateRoute';
+import MyBooks from './components/MyBooks';
 
 function App() {
   return (
+    <AuthProvider>
     <Router>
-      <Navbar/>
+    <Navbar/>
       <Switch>  
-        <Route path="/signin">
+         <PrivateRoute exact path="/" component={Books}/> 
+         <PrivateRoute exact path="/mybooks" component={MyBooks} /> 
+        <Route exact path="/signin">
           <SignIn/>
         </Route>
-        <Route path="/signup">
+        <Route exact path="/signup">
           <SignUp/>
         </Route>
-        <Route path="/confirm-signup">
+        <Route exact path="/confirm-signup">
           <ConfirmSignUp/>
         </Route>
-         <Route path="/">
-          <Books />
-        </Route>
-      </Switch>
+        </Switch>
      </Router>
+     </AuthProvider>
   );
 }
 

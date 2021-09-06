@@ -1,24 +1,20 @@
 import { Auth } from 'aws-amplify'
 import React,{useState} from 'react'
 import { Link, useHistory} from "react-router-dom"
+import { useAuth } from './contexts/AuthContext'
+
 
 const SignUp = () => {
     const [userName, setUserName] = useState("")
     const [userMail, setUserMail] = useState("")
     const [password, setPassword] = useState("")
     const history = useHistory();
- 
+    const {signup} = useAuth()
+    
     const handleSubmit = async (e) => {
         e.preventDefault(); 
         try{
-          const signup = await Auth.signUp({
-            username:userName,
-            password:password,
-            attributes:{
-              email:userMail
-            }
-          })
-          console.log(signup)
+          await signup( userName,password,userMail)
           history.push('/confirm-signup')
         }
         catch(err)

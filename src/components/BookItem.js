@@ -1,9 +1,14 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+import { API, Auth, graphqlOperation, Hub } from 'aws-amplify'
 
 const BookItem = ({title, authors, description, published, image}) => {
-    return (
 
-     <div className="max-w-xs w-60 m-7 rounded overflow-hidden shadow-xl card m-2 cursor-pointer  border-gray-500 rounded-lg hover:shadow-md hover:border-opacity-0 transform hover:-translate-y-1 transition-all duration-300">
+
+
+    
+    return (
+     <div className="max-w-xs w-60 m-7 rounded overflow-hidden shadow-xl card m-2  border-gray-500 rounded-lg hover:shadow-md hover:border-opacity-0 transform hover:-translate-y-1 transition-all duration-300">
       <img className="w-full h-60" src={image} alt="title"/>
         <div className="px-6 py-4 ">
             <div className="font-bold text-sm mb-2">{title}</div>
@@ -14,11 +19,11 @@ const BookItem = ({title, authors, description, published, image}) => {
                 <strong>Published:</strong> {published ? published : "Not Available"}    
             </p>
         </div>
-            {/* <div className="px-6 pt-4 pb-2">
-                <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#photography</span>
-                <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#travel</span>
-                <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#winter</span>
-          </div> */}
+            <div className="px-6 pt-4 pb-4">
+                <Link to="/mybooks" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+                    Add Book
+                </Link>
+          </div>
         </div>
     )
 }
