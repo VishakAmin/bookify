@@ -1,7 +1,6 @@
 import { Auth } from 'aws-amplify'
 import React,{useState, useEffect} from 'react'
 import { Redirect, Route} from 'react-router-dom'
-import Books from './Books'
 
 
 const PrivateRoute = ({component: Component, ...rest}) => {
@@ -9,10 +8,8 @@ const PrivateRoute = ({component: Component, ...rest}) => {
     const [isLoading, setIsLoadingUser] = useState(true)
     
     // Do get current user from context api.
-
-
      useEffect(() => {
-        let fetchUser = async() => { 
+        const fetchUser = async() => { 
             try{
                 let user =  await Auth.currentAuthenticatedUser();
                 await setSignInUser(user)

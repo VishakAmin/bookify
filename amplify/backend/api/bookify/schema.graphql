@@ -1,6 +1,9 @@
-type Todo @model {
+type Book @model {
   id: ID!
-  book_name: String!
+  title: String!
+  authors: String
   description: String
-  published: String
+  published: AWSDate
+  image:String
+  link: String
 }

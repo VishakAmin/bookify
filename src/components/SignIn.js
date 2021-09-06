@@ -1,6 +1,6 @@
-import { Auth } from 'aws-amplify'
 import React,{useState} from 'react'
 import { Link, useHistory } from 'react-router-dom';
+
 import { useAuth } from './contexts/AuthContext';
 
 
@@ -9,7 +9,6 @@ const SignIn = () => {
     const [password, setPassword] = useState("")
     const {signin} = useAuth()
     const history = useHistory()
-
 
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -20,7 +19,6 @@ const SignIn = () => {
       catch(err){
           console.log(err);
       }
-
     }
     
     return (
@@ -62,8 +60,6 @@ const SignIn = () => {
         </p>
       </div>
       </div>
-
-
     )
 }
 

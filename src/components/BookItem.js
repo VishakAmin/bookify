@@ -1,11 +1,24 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import { API, Auth, graphqlOperation, Hub } from 'aws-amplify'
+import { toast } from 'react-toastify';
+import { API,graphqlOperation} from 'aws-amplify'
 
-const BookItem = ({title, authors, description, published, image}) => {
+import { createBook } from '../graphql/mutations'
 
 
+const BookItem = ({title, authors, description, published, image, link}) => {
 
+    const addBooks = async () => {
+        try{
+          
+            const book = {title, authors, description, published, image, link}
+            await API.graphql(graphqlOperation(createBook, {input:book}))
+            toast.success(`${title} Added Successfully`);
+           
+        }
+        catch(err){
+            console.log("Error in creating", err)
+        }
+    }
     
     return (
      <div className="max-w-xs w-60 m-7 rounded overflow-hidden shadow-xl card m-2  border-gray-500 rounded-lg hover:shadow-md hover:border-opacity-0 transform hover:-translate-y-1 transition-all duration-300">
@@ -20,11 +33,13 @@ const BookItem = ({title, authors, description, published, image}) => {
             </p>
         </div>
             <div className="px-6 pt-4 pb-4">
-                <Link to="/mybooks" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+                <button onClick={ addBooks} id="animate.css" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
                     Add Book
-                </Link>
+                </button>
           </div>
+          
         </div>
+    
     )
 }
 
