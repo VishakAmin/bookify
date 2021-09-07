@@ -1,4 +1,4 @@
-import { API, graphqlOperation } from 'aws-amplify'
+import {Auth, API, graphqlOperation } from 'aws-amplify'
 import React,{useEffect, useState} from 'react'
 import { toast } from 'react-toastify';
 
@@ -9,9 +9,31 @@ import MyBooksItem from './MyBooksItem'
 const MyBooks = () => {
     const [books, setBooks] = useState([])
 
+    const [signInUser, setSignInUser] = useState("")
+
+    let data = ""
+
+    useEffect(() => {
+        const fetchUser = async() => { 
+            try{
+                const user =  await Auth.currentAuthenticatedUser();
+                await setSignInUser(user.attributes.sub)
+            }
+            catch(err) {
+                console.log(err);
+            }
+        }
+        fetchUser()
+        fetchBooks()
+     },[])
+
+
     const fetchBooks = async () => {
         try{
-            const todoData = await API.graphql(graphqlOperation(listBooks))
+            console.log("USER IS ", data);
+            const todoData = await API.graphql(graphqlOperation(listBooks,{
+                filter : { userId : { eq : signInUser } }
+              }))
             console.log(todoData);
             setBooks(todoData.data.listBooks.items);
         }
@@ -32,11 +54,7 @@ const MyBooks = () => {
         }
     }
 
-    
-    useEffect(() => {
-        fetchBooks()
-    }, [])
-    console.log(books);
+
     
     return ( 
         <>

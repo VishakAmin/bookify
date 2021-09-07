@@ -1,5 +1,6 @@
 type Book @model {
   id: ID!
+  userId: String!
   title: String!
   authors: String
   description: String

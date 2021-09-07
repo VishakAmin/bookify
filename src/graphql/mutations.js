@@ -8,6 +8,7 @@ export const createBook = /* GraphQL */ `
   ) {
     createBook(input: $input, condition: $condition) {
       id
+      userId
       title
       authors
       description
@@ -26,6 +27,7 @@ export const updateBook = /* GraphQL */ `
   ) {
     updateBook(input: $input, condition: $condition) {
       id
+      userId
       title
       authors
       description
@@ -44,6 +46,7 @@ export const deleteBook = /* GraphQL */ `
   ) {
     deleteBook(input: $input, condition: $condition) {
       id
+      userId
       title
       authors
       description

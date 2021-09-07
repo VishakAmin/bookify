@@ -5,6 +5,7 @@ export const onCreateBook = /* GraphQL */ `
   subscription OnCreateBook {
     onCreateBook {
       id
+      userId
       title
       authors
       description
@@ -20,6 +21,7 @@ export const onUpdateBook = /* GraphQL */ `
   subscription OnUpdateBook {
     onUpdateBook {
       id
+      userId
       title
       authors
       description
@@ -35,6 +37,7 @@ export const onDeleteBook = /* GraphQL */ `
   subscription OnDeleteBook {
     onDeleteBook {
       id
+      userId
       title
       authors
       description
