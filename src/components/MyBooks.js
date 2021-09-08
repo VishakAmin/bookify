@@ -4,37 +4,44 @@ import { toast } from 'react-toastify';
 
 import { deleteBook } from '../graphql/mutations'
 import { listBooks } from '../graphql/queries'
+import { useAuth } from './contexts/AuthContext';
 import MyBooksItem from './MyBooksItem'
+
 
 const MyBooks = () => {
     const [books, setBooks] = useState([])
-
-    const [signInUser, setSignInUser] = useState("")
-
-    let data = ""
+    const {user} = useAuth()
 
     useEffect(() => {
-        const fetchUser = async() => { 
-            try{
-                const user =  await Auth.currentAuthenticatedUser();
-                await setSignInUser(user.attributes.sub)
-            }
-            catch(err) {
-                console.log(err);
-            }
-        }
-        fetchUser()
-        fetchBooks()
+    //     const fetchUser = async() => { 
+    //         try{
+    //             let user =  await userSignedIn();
+    //             setSignInUser(user.attributes.sub);
+    //         }
+    //         catch(err) {  
+    //             console.log(err);
+    //         }
+    //     }
+    //    fetchUser()
+    console.log(user.attributes.sub);
+    fetchBooks()
      },[])
 
+   
 
     const fetchBooks = async () => {
+       
         try{
-            console.log("USER IS ", data);
+            const filter = {
+                userId: {
+                    eq: user.attributes.sub
+                }
+            };
+            console.log("USER IS ", user.attributes.sub  );
             const todoData = await API.graphql(graphqlOperation(listBooks,{
-                filter : { userId : { eq : signInUser } }
+                filter :  filter
               }))
-            console.log(todoData);
+            console.log("MY NOOKS",todoData);
             setBooks(todoData.data.listBooks.items);
         }
         catch(err){
@@ -58,7 +65,7 @@ const MyBooks = () => {
     
     return ( 
         <>
-            {books ? (
+            {books.length > 0 ? (
              books.map((book) => (
                     <MyBooksItem 
                     key={book.id}
@@ -74,9 +81,11 @@ const MyBooks = () => {
              ))   
             ) :  
             (
-                <p> Add Books</p>
-                    
+                <div>
 
+
+                <p className="text-center text-4xl font-bold"> No Books Added</p>
+                </div>                    
             )}
         
         </>

@@ -7,27 +7,15 @@ import BookItem from './BookItem'
 import SearchBox from './UI/SearchBox'
 import { listBooks } from '../graphql/queries'
 import { createBook, deleteBook } from '../graphql/mutations'
+import { useAuth } from './contexts/AuthContext';
 
 const Books = () => {
     const [bookData, setbookData] = useState()
     const [searchKey, setSearchKey] = useState()
     const [myBooks, setMyBooks] = useState()
-
-   const [signInUser, setSignInUser] = useState(null)
-
-    useEffect(() => {
-        const fetchUser = async() => { 
-            try{
-                let user =  await Auth.currentAuthenticatedUser();
-                await setSignInUser(user.attributes.sub)
-             
-            }
-            catch(err) {
-                console.log(err);
-            }
-        }
-        fetchUser()
-     },[])
+    const {user} = useAuth()
+  
+  
     //https://www.googleapis.com/books/v1/volumes?q=flowers+inauthor:keyes&key=AIzaSyCUjSXweCgK40ZnBNC_Z96mhHFD5wxhRg8
 
   const handleSubmit = () => {
@@ -43,7 +31,7 @@ const Books = () => {
   const fetchBooks = useCallback(async () => {
     try{
         const todoData = await API.graphql(graphqlOperation(listBooks,{
-          filter : { userId : {eq: signInUser } }
+          filter : { userId : {eq: user.attributes.sub } }
         }))
         setMyBooks(todoData.data.listBooks.items);
         
@@ -51,7 +39,7 @@ const Books = () => {
     catch(err){
         console.log("Error fetching", err);
     }
-},[signInUser])
+},[])
 
 const removeBook = async (title) => {
   try{
@@ -65,10 +53,10 @@ const removeBook = async (title) => {
   }
 }
 
-const addBooks = async ({title, authors, description, published, image, link, userId}) => {
+const addBooks = async ({title, authors, description, published, image, link}) => {
   try{
-    console.log("USER",signInUser);
-      const book = {title, authors, description, published, image, link, userId:signInUser}
+    console.log("USER",user);
+      const book = {title, authors, description, published, image, link, userId:user.attributes.sub}
       let response = await API.graphql(graphqlOperation(createBook, {input:book}))
       toast.success(`${title} Added Successfully`);
       console.log(response);

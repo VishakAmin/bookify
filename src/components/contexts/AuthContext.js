@@ -11,6 +11,7 @@ export const AuthProvider = ({children}) => {
     const [signInUser, setSignInUser] = useState(null)
     const [isLoading, setIsLoadingUser] = useState(false)
     const [isSignIn, setIsSignIn] = useState(false)
+    const [user, setUser] = useState()
 
     useEffect(() => {
         const fetchUser = async() => { 
@@ -28,6 +29,10 @@ export const AuthProvider = ({children}) => {
         fetchUser()
     },[])
 
+    async function  userSignedIn  ()  {
+           const data = await Auth.currentAuthenticatedUser();
+           setUser(data)
+    }
 
     function signin(username, password) {
         setIsSignIn(true)
@@ -55,7 +60,10 @@ export const AuthProvider = ({children}) => {
         signup,
         logout,
         isLoading,
-        isSignIn
+        isSignIn,
+        user,
+        userSignedIn
+
       
     }
 
