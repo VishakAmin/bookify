@@ -14,9 +14,6 @@ const Books = () => {
     const [searchKey, setSearchKey] = useState()
     const [myBooks, setMyBooks] = useState()
     const {user} = useAuth()
-  
-  
-    //https://www.googleapis.com/books/v1/volumes?q=flowers+inauthor:keyes&key=AIzaSyCUjSXweCgK40ZnBNC_Z96mhHFD5wxhRg8
 
   const handleSubmit = () => {
     axios.get(`https://www.googleapis.com/books/v1/volumes?q=${searchKey}&key=${process.env.REACT_APP_API_KEY}`) 
@@ -45,7 +42,8 @@ const removeBook = async (title) => {
   try{
       const book  = myBooks.filter(item => item.title === title)
       await API.graphql(graphqlOperation(deleteBook, {input:{id:book[0].id}}))
-      setbookData(bookData.filter(item => item.volumeInfo.title !== book[0].title))
+      //setbookData(bookData.filter(item => item.volumeInfo.title !== book[0].title))
+      fetchBooks()
       toast.error(`${title} Removed Successfully`);
   }
   catch(err){
@@ -58,6 +56,7 @@ const addBooks = async ({title, authors, description, published, image, link}) =
     console.log("USER",user);
       const book = {title, authors, description, published, image, link, userId:user.attributes.sub}
       let response = await API.graphql(graphqlOperation(createBook, {input:book}))
+      fetchBooks()
       toast.success(`${title} Added Successfully`);
       console.log(response);
   }

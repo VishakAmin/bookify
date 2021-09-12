@@ -10,24 +10,32 @@ import MyBooksItem from './MyBooksItem'
 
 const MyBooks = () => {
     const [books, setBooks] = useState([])
+    const [sortType, setSortType] = useState("")
     const {user} = useAuth()
 
     useEffect(() => {
-    //     const fetchUser = async() => { 
-    //         try{
-    //             let user =  await userSignedIn();
-    //             setSignInUser(user.attributes.sub);
-    //         }
-    //         catch(err) {  
-    //             console.log(err);
-    //         }
-    //     }
-    //    fetchUser()
     console.log(user.attributes.sub);
     fetchBooks()
      },[])
 
-   
+    
+    const handleSort = (e) => {
+        setSortType(e.target.value)
+
+        const newBooks = [...books]
+        console.log(sortType);
+        const sortArray = newBooks.sort((a,b) => {
+            return new Date(a.createdAt) - new Date(b.createdAt)
+        })
+
+        console.log(sortArray);
+        if(sortType === "newest"){
+            setBooks(sortArray)
+        }
+        else{
+            setBooks(sortArray.reverse())
+        }
+    }
 
     const fetchBooks = async () => {
        
@@ -62,9 +70,19 @@ const MyBooks = () => {
     }
 
 
-    
+    console.log(sortType);
     return ( 
-        <>
+        <> 
+        <div className="flex justify-end pr-56">
+        <label className="block text-left w-36 ">
+        <span className="text-gray-700">Sort by Added Date</span>
+        <select className="form-select block w-full mt-1 border rounded" onChange={handleSort}>
+            <option value="" disabled selected>Choose</option>
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option> 
+        </select>
+        </label>
+        </div>
             {books.length > 0 ? (
              books.map((book) => (
                     <MyBooksItem 

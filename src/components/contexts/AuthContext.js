@@ -14,30 +14,33 @@ export const AuthProvider = ({children}) => {
     const [user, setUser] = useState()
 
     useEffect(() => {
-        const fetchUser = async() => { 
-            try{
-                let user =  await Auth.currentAuthenticatedUser();
-                setSignInUser(user)
-                setIsSignIn(true)
-                setIsLoadingUser(true)
-            }
-            catch(err) {
-                setIsLoadingUser(false)
-                console.log(err);
-            }
-        }
         fetchUser()
     },[])
+
+    const fetchUser = async() => { 
+        try{
+            let user =  await Auth.currentAuthenticatedUser();
+            setSignInUser(user)
+            setIsSignIn(true)
+            setIsLoadingUser(true)
+        }
+        catch(err) {
+            setIsLoadingUser(false)
+            console.log(err);
+        }
+    }
 
     async function  userSignedIn  ()  {
            const data = await Auth.currentAuthenticatedUser();
            setUser(data)
+           return data
     }
 
     function signin(username, password) {
         setIsSignIn(true)
-        Auth.signIn(username, password)
+        return Auth.signIn(username, password)
     }
+
     function signup(username, password, email) {
         return Auth.signUp({
             username:username,
@@ -50,6 +53,7 @@ export const AuthProvider = ({children}) => {
 
     function logout(){
         setIsSignIn(false)
+        setSignInUser(null)
         Auth.signOut() 
         
     }

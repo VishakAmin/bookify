@@ -7,14 +7,24 @@ import { useAuth } from './contexts/AuthContext';
 const SignIn = () => {
     const [userName, setUserName] = useState("")
     const [password, setPassword] = useState("")
-    const {signin} = useAuth()
+    const {signin, userSignedIn} = useAuth()
     const history = useHistory()
 
     const handleSubmit = async (e) => {
       e.preventDefault();
       try{
-          await signin(userName, password)   
-          history.push("/")
+             signin(userName, password).then((response) => {
+                  userSignedIn().then((data) => {
+                    console.log(data);
+                    history.push("/")
+                  })
+                  
+             }); 
+            //.then((response) => {
+          //         console.log(response);
+          // })   
+          // await userSignedIn()
+          
       }
       catch(err){
           console.log(err);
