@@ -1,8 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import { toast } from 'react-toastify';
-import {Auth, API,graphqlOperation} from 'aws-amplify'
-
-import { createBook, deleteBook } from '../graphql/mutations'
+import {Auth} from 'aws-amplify'
 
 
 const BookItem = ({title, authors, description, published, image, link, books,bookAdded, bookId, removeBook, addBook}) => {
@@ -14,7 +11,6 @@ const BookItem = ({title, authors, description, published, image, link, books,bo
             try{
                 let user =  await Auth.currentAuthenticatedUser();
                 await setSignInUser(user.attributes.sub)
-             
             }
             catch(err) {
                 console.log(err);

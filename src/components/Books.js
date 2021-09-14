@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useReducer } from 'react'
 import axios from 'axios'
 import { Auth, API,graphqlOperation} from 'aws-amplify'
 import { toast } from 'react-toastify';
@@ -9,8 +9,18 @@ import { listBooks } from '../graphql/queries'
 import { createBook, deleteBook } from '../graphql/mutations'
 import { useAuth } from './contexts/AuthContext';
 
+function reducer(state, action) {
+  switch (action.type) {
+    case "fetch-books": 
+       return [action.payload] 
+    default:
+      break;
+  }  
+}
+
 const Books = () => {
     const [bookData, setbookData] = useState()
+    const [books, dispatch] = useReducer(reducer,[])
     const [searchKey, setSearchKey] = useState()
     const [myBooks, setMyBooks] = useState()
     const {user} = useAuth()
@@ -27,11 +37,13 @@ const Books = () => {
 
   const fetchBooks = useCallback(async () => {
     try{
-        const todoData = await API.graphql(graphqlOperation(listBooks,{
+        const booksData = await API.graphql(graphqlOperation(listBooks,{
           filter : { userId : {eq: user.attributes.sub } }
         }))
-        setMyBooks(todoData.data.listBooks.items);
-        
+
+        console.log("TIMESS",booksData);
+        dispatch({type:"fetch-books", payload: booksData.data.listBooks.items})
+        // setMyBooks(todoData.data.listBooks.items);
     }
     catch(err){
         console.log("Error fetching", err);
@@ -40,7 +52,7 @@ const Books = () => {
 
 const removeBook = async (title) => {
   try{
-      const book  = myBooks.filter(item => item.title === title)
+      const book  = books.filter(item => item.title === title)
       await API.graphql(graphqlOperation(deleteBook, {input:{id:book[0].id}}))
       //setbookData(bookData.filter(item => item.volumeInfo.title !== book[0].title))
       fetchBooks()
@@ -65,12 +77,12 @@ const addBooks = async ({title, authors, description, published, image, link}) =
   }
 }
 
+console.log("REDUCER", books);
 
 useEffect(() => {
     fetchBooks()
 },[])
 
-  console.log(myBooks);
   return (
         <div>
            <div className="flex justify-center">
@@ -87,9 +99,9 @@ useEffect(() => {
                    published ={item.volumeInfo.publishedDate}
                    image={item.volumeInfo.imageLinks.thumbnail ? item.volumeInfo.imageLinks.thumbnail : "N/A"}
                    link={item.volumeInfo.previewLink}
-                   bookAdded ={myBooks && myBooks.map(book => book.title )}
-                   bookId = {myBooks && myBooks.map(book => book.id)}
-                   books={myBooks}
+                   bookAdded ={books && books[0].map(book => book.title )}
+                   bookId = {books && books[0].map(book => book.id)}
+                   books={books}
                   removeBook={removeBook}
                   addBook={addBooks}
                  />
