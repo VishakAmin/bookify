@@ -28,7 +28,6 @@ const SignIn = () => {
                     console.log(data);
                     history.push("/")
                   })
-                  
              }); 
       }
       catch(err){

@@ -12,6 +12,15 @@ export const getBook = /* GraphQL */ `
       published
       image
       link
+      bookComments {
+        items {
+          id
+          comment
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -33,6 +42,68 @@ export const listBooks = /* GraphQL */ `
         published
         image
         link
+        bookComments {
+          items {
+            id
+            comment
+            createdAt
+            updatedAt
+          }
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getBookComment = /* GraphQL */ `
+  query GetBookComment($id: ID!) {
+    getBookComment(id: $id) {
+      id
+      comment
+      commentBook {
+        id
+        userId
+        title
+        authors
+        description
+        published
+        image
+        link
+        bookComments {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listBookComments = /* GraphQL */ `
+  query ListBookComments(
+    $filter: ModelBookCommentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listBookComments(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        comment
+        commentBook {
+          id
+          userId
+          title
+          authors
+          description
+          published
+          image
+          link
+          createdAt
+          updatedAt
+        }
         createdAt
         updatedAt
       }
