@@ -2,7 +2,7 @@ import {Auth, API, graphqlOperation } from 'aws-amplify'
 import React,{useEffect, useState} from 'react'
 import { toast } from 'react-toastify';
 
-import { deleteBook } from '../graphql/mutations'
+import { deleteBook,createBookComment, deleteBookComment } from '../graphql/mutations'
 import { listBooks } from '../graphql/queries'
 import { useAuth } from './contexts/AuthContext';
 import MyBooksItem from './MyBooksItem'
@@ -46,11 +46,12 @@ const MyBooks = () => {
                 }
             };
             console.log("USER IS ", user.attributes.sub  );
-            const todoData = await API.graphql(graphqlOperation(listBooks,{
+            const bookData = await API.graphql(graphqlOperation(listBooks,{
                 filter :  filter
               }))
-            console.log("MY NOOKS",todoData);
-            setBooks(todoData.data.listBooks.items);
+            console.log("MY NOOKS",bookData);
+            console.log("dasdasd",bookData);
+            setBooks(bookData.data.listBooks.items);
         }
         catch(err){
             console.log("Error fetching", err);
@@ -70,7 +71,26 @@ const MyBooks = () => {
     }
 
 
-    console.log(sortType);
+    const addComment = async(id, comment ) => {
+        let response = await API.graphql(graphqlOperation(createBookComment, 
+          { input:{
+              comment:comment,
+              bookCommentCommentBookId: id
+      }}))
+      fetchBooks()
+      }
+      
+    const deleteComment = async(id) => {
+        let response = await API.graphql(graphqlOperation(deleteBookComment, 
+            { input:{
+                    id:id
+            }}))
+        fetchBooks()
+        console.log(response, id);   
+    }
+    
+
+
     return ( 
         <> 
         <div className="flex justify-end pr-56">
@@ -94,15 +114,16 @@ const MyBooks = () => {
                     image={book.image}
                     link={book.link}
                     published={book.published}
+                    comments={book.bookComments.items}
                     removeBooks = {removeBooks}
+                    addComment={addComment}
+                    deleteComment = {deleteComment}
                     />
              ))   
             ) :  
             (
                 <div>
-
-
-                <p className="text-center text-4xl font-bold"> No Books Added</p>
+                    <p className="text-center text-4xl font-bold"> No Books Added</p>
                 </div>                    
             )}
         

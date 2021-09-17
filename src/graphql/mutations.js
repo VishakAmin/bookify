@@ -15,6 +15,15 @@ export const createBook = /* GraphQL */ `
       published
       image
       link
+      bookComments {
+        items {
+          id
+          comment
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -34,6 +43,15 @@ export const updateBook = /* GraphQL */ `
       published
       image
       link
+      bookComments {
+        items {
+          id
+          comment
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -53,6 +71,99 @@ export const deleteBook = /* GraphQL */ `
       published
       image
       link
+      bookComments {
+        items {
+          id
+          comment
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createBookComment = /* GraphQL */ `
+  mutation CreateBookComment(
+    $input: CreateBookCommentInput!
+    $condition: ModelBookCommentConditionInput
+  ) {
+    createBookComment(input: $input, condition: $condition) {
+      id
+      comment
+      commentBook {
+        id
+        userId
+        title
+        authors
+        description
+        published
+        image
+        link
+        bookComments {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateBookComment = /* GraphQL */ `
+  mutation UpdateBookComment(
+    $input: UpdateBookCommentInput!
+    $condition: ModelBookCommentConditionInput
+  ) {
+    updateBookComment(input: $input, condition: $condition) {
+      id
+      comment
+      commentBook {
+        id
+        userId
+        title
+        authors
+        description
+        published
+        image
+        link
+        bookComments {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteBookComment = /* GraphQL */ `
+  mutation DeleteBookComment(
+    $input: DeleteBookCommentInput!
+    $condition: ModelBookCommentConditionInput
+  ) {
+    deleteBookComment(input: $input, condition: $condition) {
+      id
+      comment
+      commentBook {
+        id
+        userId
+        title
+        authors
+        description
+        published
+        image
+        link
+        bookComments {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }

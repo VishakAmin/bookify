@@ -77,7 +77,9 @@ const addBooks = async ({title, authors, description, published, image, link}) =
   }
 }
 
-console.log("REDUCER", books);
+
+
+//console.log("REDUCER", books);
 
 useEffect(() => {
     fetchBooks()
@@ -93,6 +95,7 @@ useEffect(() => {
                 bookData.map((item) => (
                   <BookItem 
                    key={item.id}
+
                    title = {item.volumeInfo.title}
                    authors = {item.volumeInfo.authors}
                    description={item.volumeInfo.description}
@@ -104,6 +107,7 @@ useEffect(() => {
                    books={books}
                   removeBook={removeBook}
                   addBook={addBooks}
+                 
                  />
              ))
             ) :  

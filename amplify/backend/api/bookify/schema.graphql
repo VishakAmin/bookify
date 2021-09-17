@@ -7,7 +7,12 @@ type Book @model {
   published: AWSDate
   image:String
   link: String
-  
+  bookComments: [BookComment] @connection(name: "BookComments" )
 }
 
-//connection with appsync
+type BookComment @model {
+  id: ID!
+  comment: String 
+  commentBook: Book @connection(name: "BookComments" )
+}
+

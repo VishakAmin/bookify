@@ -1,17 +1,29 @@
-import React from 'react'
 
-const MyBooksItem = ({title, authors, description, published, image, link, removeBooks,id}) => {
+import React,{useState} from 'react'
 
+
+const MyBooksItem = ({title, authors, comments ,description, published, image, link, removeBooks,id, addComment,deleteComment}) => {
+
+    const [comment, setComment] = useState("")
     const removeBook = () => {
-
         removeBooks(id, title)
     }
     
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        addComment(id, comment)
+        setComment("")
+    }
     
+    const deleteBookComment = (id) => {
+        deleteComment(id)
+    }
+
+
     return (
         <div>
               <div className="pt-10 pl-5 flex justify-center">
-               <div className="max-w-screen-xl w-full lg:flex">
+               <div className="max-w-screen-xl w-full lg:flex shadow-lg">
                <div className="h-48 lg:h-auto lg:w-48 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" style={{backgroundImage: `url(${image})`}} title="Woman holding a mug">
                </div>
                <div className="border-r border-b border-l border-grey-light lg:border-l-0 lg:border-t lg:border-grey-light bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal">
@@ -34,9 +46,32 @@ const MyBooksItem = ({title, authors, description, published, image, link, remov
                     </button>
                     </div>
                     </div>
+                  
                </div>
                </div>
-               </div>   
+               </div>
+               <div className="pl-64 pt-4">
+                        <h6 className="text-black font-semibold"> Comment Section</h6>
+                        <div>                                
+                            <form onSubmit={handleSubmit} className="space-x-4 pt-2">
+                                <input type="text" value={comment} className="w-6/12 p-3 border rounded-lg" placeholder="Add your comment" onChange={(e) => setComment(e.target.value)}/>
+                                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">Post</button>
+                            </form>
+                        </div>
+                        {comments.length > 0 ? (
+                            comments.map((com) => (
+                                <div key={com.id} className="w-6/12 mt-4 border-r border-b border-l border-grey-light  lg:border-t lg:border-grey-light bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex justify-between ">
+                                <p>{com.comment}</p>
+                                <button onClick={()=>deleteBookComment(com.id)} >
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg> 
+                                </button>
+                                </div>
+                            ))
+                        ) : <p className="pt-6 font-semibold text-lg">No Comments</p>}
+                    </div>
+                  
         </div>
     )
 }
