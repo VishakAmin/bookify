@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import BookItem from './BookItem'
 import SearchBox from './UI/SearchBox'
 import { listBooks } from '../graphql/queries'
-import { createBook, deleteBook } from '../graphql/mutations'
+import { createBook, createUserBooks, deleteBook } from '../graphql/mutations'
 import { useAuth } from './contexts/AuthContext';
 
 function reducer(state, action) {
@@ -66,17 +66,47 @@ const removeBook = async (title) => {
 const addBooks = async ({title, authors, description, published, image, link}) => {
   try{
     console.log("USER",user);
-      const book = {title, authors, description, published, image, link, userId:user.attributes.sub}
-      let response = await API.graphql(graphqlOperation(createBook, {input:book}))
+      const book = {title, authors, description, published, image, link}
+      let  allBooks = await API.graphql(graphqlOperation(listBooks,{
+          filter : {
+            title : {
+              eq: title
+            }
+          }        
+      }))
+      console.log(allBooks.data.listBooks.items[0]);
+      console.log(user.attributes.sub);
+
+      if(allBooks.data.listBooks.items.length > 0){
+        let response = await API.graphql(graphqlOperation(createUserBooks, {
+          input:{
+           userBooksBookId: allBooks.data.listBooks.items[0].id,
+           userBooksUserId: user.attributes.sub
+          }
+        }))
+        console.log(response);          
+      }
+      else{
+        console.log("WATCH HERE",user.attributes.sub);
+          let response = await API.graphql(graphqlOperation(createBook, {input:book}))
+          let response_ = await API.graphql(graphqlOperation(createUserBooks, {
+           input:{
+            userBooksBookId: response.data.createBook.id,
+            userBooksUserId: user.attributes.sub
+           }
+         })) 
+         console.log(response, response_);
+      }
+
+     
       fetchBooks()
-      toast.success(`${title} Added Successfully`);
-      console.log(response);
   }
   catch(err){
       console.log("Error in creating", err)
   }
 }
 
+console.log(user.attributes.sub);
 
 
 //console.log("REDUCER", books);
@@ -102,8 +132,8 @@ useEffect(() => {
                    published ={item.volumeInfo.publishedDate}
                    image={item.volumeInfo.imageLinks.thumbnail ? item.volumeInfo.imageLinks.thumbnail : "N/A"}
                    link={item.volumeInfo.previewLink}
-                   bookAdded ={books && books[0].map(book => book.title )}
-                   bookId = {books && books[0].map(book => book.id)}
+                   bookAdded ={books[0] && books[0].map(book => book.title )}
+                   bookId = {books[0] && books[0].map(book => book.id)}
                    books={books}
                   removeBook={removeBook}
                   addBook={addBooks}

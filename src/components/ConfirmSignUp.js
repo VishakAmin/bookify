@@ -12,12 +12,15 @@ const ConfirmSignUp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try{
-            await Auth.confirmSignUp(userName,authCode)
+            let response = await Auth.confirmSignUp(userName,authCode)
+            console.log(response);
             history.push("/signin")
+
         }
         catch(err){
             console.log(err);
         }
+
     }
     
     return (
@@ -49,13 +52,14 @@ const ConfirmSignUp = () => {
           <div className="flex items-center justify-between">
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
                 Confirm
+            </button>
             <Link to="/signin">
             <p className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
               Go Back
             </p>
             
             </Link>
-            </button>
+            
           </div>
         </form>
         <p className="text-center text-gray-500 text-xs">

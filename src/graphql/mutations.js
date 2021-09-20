@@ -8,7 +8,6 @@ export const createBook = /* GraphQL */ `
   ) {
     createBook(input: $input, condition: $condition) {
       id
-      userId
       title
       authors
       description
@@ -19,6 +18,14 @@ export const createBook = /* GraphQL */ `
         items {
           id
           comment
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      users {
+        items {
+          id
           createdAt
           updatedAt
         }
@@ -36,7 +43,6 @@ export const updateBook = /* GraphQL */ `
   ) {
     updateBook(input: $input, condition: $condition) {
       id
-      userId
       title
       authors
       description
@@ -47,6 +53,14 @@ export const updateBook = /* GraphQL */ `
         items {
           id
           comment
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      users {
+        items {
+          id
           createdAt
           updatedAt
         }
@@ -64,7 +78,6 @@ export const deleteBook = /* GraphQL */ `
   ) {
     deleteBook(input: $input, condition: $condition) {
       id
-      userId
       title
       authors
       description
@@ -79,6 +92,129 @@ export const deleteBook = /* GraphQL */ `
           updatedAt
         }
         nextToken
+      }
+      users {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createUserBooks = /* GraphQL */ `
+  mutation CreateUserBooks(
+    $input: CreateUserBooksInput!
+    $condition: ModelUserBooksConditionInput
+  ) {
+    createUserBooks(input: $input, condition: $condition) {
+      id
+      user {
+        id
+        userId
+        books {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      book {
+        id
+        title
+        authors
+        description
+        published
+        image
+        link
+        bookComments {
+          nextToken
+        }
+        users {
+          userId
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateUserBooks = /* GraphQL */ `
+  mutation UpdateUserBooks(
+    $input: UpdateUserBooksInput!
+    $condition: ModelUserBooksConditionInput
+  ) {
+    updateUserBooks(input: $input, condition: $condition) {
+      id
+      user {
+        id
+        userId
+        books {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      book {
+        id
+        title
+        authors
+        description
+        published
+        image
+        link
+        bookComments {
+          nextToken
+        }
+        users {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteUserBooks = /* GraphQL */ `
+  mutation DeleteUserBooks(
+    $input: DeleteUserBooksInput!
+    $condition: ModelUserBooksConditionInput
+  ) {
+    deleteUserBooks(input: $input, condition: $condition) {
+      id
+      user {
+        id
+        userId
+        books {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      book {
+        id
+        title
+        authors
+        description
+        published
+        image
+        link
+        bookComments {
+          nextToken
+        }
+        users {
+          nextToken
+        }
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
@@ -95,7 +231,6 @@ export const createBookComment = /* GraphQL */ `
       comment
       commentBook {
         id
-        userId
         title
         authors
         description
@@ -103,6 +238,9 @@ export const createBookComment = /* GraphQL */ `
         image
         link
         bookComments {
+          nextToken
+        }
+        users {
           nextToken
         }
         createdAt
@@ -123,7 +261,6 @@ export const updateBookComment = /* GraphQL */ `
       comment
       commentBook {
         id
-        userId
         title
         authors
         description
@@ -131,6 +268,9 @@ export const updateBookComment = /* GraphQL */ `
         image
         link
         bookComments {
+          nextToken
+        }
+        users {
           nextToken
         }
         createdAt
@@ -151,7 +291,6 @@ export const deleteBookComment = /* GraphQL */ `
       comment
       commentBook {
         id
-        userId
         title
         authors
         description
@@ -161,8 +300,74 @@ export const deleteBookComment = /* GraphQL */ `
         bookComments {
           nextToken
         }
+        users {
+          nextToken
+        }
         createdAt
         updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createUser = /* GraphQL */ `
+  mutation CreateUser(
+    $input: CreateUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    createUser(input: $input, condition: $condition) {
+      id
+      userId
+      books {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateUser = /* GraphQL */ `
+  mutation UpdateUser(
+    $input: UpdateUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    updateUser(input: $input, condition: $condition) {
+      id
+      userId
+      books {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteUser = /* GraphQL */ `
+  mutation DeleteUser(
+    $input: DeleteUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    deleteUser(input: $input, condition: $condition) {
+      id
+      userId
+      books {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       createdAt
       updatedAt

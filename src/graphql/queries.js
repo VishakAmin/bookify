@@ -5,7 +5,6 @@ export const getBook = /* GraphQL */ `
   query GetBook($id: ID!) {
     getBook(id: $id) {
       id
-      userId
       title
       authors
       description
@@ -16,6 +15,14 @@ export const getBook = /* GraphQL */ `
         items {
           id
           comment
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      users {
+        items {
+          id
           createdAt
           updatedAt
         }
@@ -35,7 +42,6 @@ export const listBooks = /* GraphQL */ `
     listBooks(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        userId
         title
         authors
         description
@@ -43,12 +49,78 @@ export const listBooks = /* GraphQL */ `
         image
         link
         bookComments {
-          items {
-            id
-            comment
-            createdAt
-            updatedAt
-          }
+          nextToken
+        }
+        users {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getUserBooks = /* GraphQL */ `
+  query GetUserBooks($id: ID!) {
+    getUserBooks(id: $id) {
+      id
+      user {
+        id
+        userId
+        books {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      book {
+        id
+        title
+        authors
+        description
+        published
+        image
+        link
+        bookComments {
+          nextToken
+        }
+        users {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listUserBooks = /* GraphQL */ `
+  query ListUserBooks(
+    $filter: ModelUserBooksFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listUserBooks(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        user {
+          id
+          userId
+          createdAt
+          updatedAt
+        }
+        book {
+          id
+          title
+          authors
+          description
+          published
+          image
+          link
+          createdAt
+          updatedAt
         }
         createdAt
         updatedAt
@@ -64,7 +136,6 @@ export const getBookComment = /* GraphQL */ `
       comment
       commentBook {
         id
-        userId
         title
         authors
         description
@@ -72,6 +143,9 @@ export const getBookComment = /* GraphQL */ `
         image
         link
         bookComments {
+          nextToken
+        }
+        users {
           nextToken
         }
         createdAt
@@ -94,7 +168,6 @@ export const listBookComments = /* GraphQL */ `
         comment
         commentBook {
           id
-          userId
           title
           authors
           description
@@ -103,6 +176,47 @@ export const listBookComments = /* GraphQL */ `
           link
           createdAt
           updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getUser = /* GraphQL */ `
+  query GetUser($id: ID!) {
+    getUser(id: $id) {
+      id
+      userId
+      books {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listUsers = /* GraphQL */ `
+  query ListUsers(
+    $filter: ModelUserFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        userId
+        books {
+          nextToken
+          items {
+            
+          }
         }
         createdAt
         updatedAt

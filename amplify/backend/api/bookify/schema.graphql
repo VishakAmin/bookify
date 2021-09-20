@@ -1,6 +1,5 @@
 type Book @model {
   id: ID!
-  userId: String!
   title: String!
   authors: String
   description: String
@@ -8,6 +7,13 @@ type Book @model {
   image:String
   link: String
   bookComments: [BookComment] @connection(name: "BookComments" )
+  users: [UserBooks] @connection(name: "BookUser")
+}
+
+type UserBooks @model {
+  id : ID!
+  user : User @connection(name:"UserBook")
+  book : Book @connection(name:"BookUser")
 }
 
 type BookComment @model {
@@ -16,3 +22,9 @@ type BookComment @model {
   commentBook: Book @connection(name: "BookComments" )
 }
 
+type User @model {
+  id: ID!
+  userId: String!
+  books : [UserBooks] @connection(name: "UserBook")
+}
+ 

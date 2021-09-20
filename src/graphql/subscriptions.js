@@ -5,7 +5,6 @@ export const onCreateBook = /* GraphQL */ `
   subscription OnCreateBook {
     onCreateBook {
       id
-      userId
       title
       authors
       description
@@ -16,6 +15,14 @@ export const onCreateBook = /* GraphQL */ `
         items {
           id
           comment
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      users {
+        items {
+          id
           createdAt
           updatedAt
         }
@@ -30,7 +37,6 @@ export const onUpdateBook = /* GraphQL */ `
   subscription OnUpdateBook {
     onUpdateBook {
       id
-      userId
       title
       authors
       description
@@ -41,6 +47,14 @@ export const onUpdateBook = /* GraphQL */ `
         items {
           id
           comment
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      users {
+        items {
+          id
           createdAt
           updatedAt
         }
@@ -55,7 +69,6 @@ export const onDeleteBook = /* GraphQL */ `
   subscription OnDeleteBook {
     onDeleteBook {
       id
-      userId
       title
       authors
       description
@@ -71,6 +84,119 @@ export const onDeleteBook = /* GraphQL */ `
         }
         nextToken
       }
+      users {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateUserBooks = /* GraphQL */ `
+  subscription OnCreateUserBooks {
+    onCreateUserBooks {
+      id
+      user {
+        id
+        userId
+        books {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      book {
+        id
+        title
+        authors
+        description
+        published
+        image
+        link
+        bookComments {
+          nextToken
+        }
+        users {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateUserBooks = /* GraphQL */ `
+  subscription OnUpdateUserBooks {
+    onUpdateUserBooks {
+      id
+      user {
+        id
+        userId
+        books {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      book {
+        id
+        title
+        authors
+        description
+        published
+        image
+        link
+        bookComments {
+          nextToken
+        }
+        users {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteUserBooks = /* GraphQL */ `
+  subscription OnDeleteUserBooks {
+    onDeleteUserBooks {
+      id
+      user {
+        id
+        userId
+        books {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      book {
+        id
+        title
+        authors
+        description
+        published
+        image
+        link
+        bookComments {
+          nextToken
+        }
+        users {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -83,7 +209,6 @@ export const onCreateBookComment = /* GraphQL */ `
       comment
       commentBook {
         id
-        userId
         title
         authors
         description
@@ -91,6 +216,9 @@ export const onCreateBookComment = /* GraphQL */ `
         image
         link
         bookComments {
+          nextToken
+        }
+        users {
           nextToken
         }
         createdAt
@@ -108,7 +236,6 @@ export const onUpdateBookComment = /* GraphQL */ `
       comment
       commentBook {
         id
-        userId
         title
         authors
         description
@@ -116,6 +243,9 @@ export const onUpdateBookComment = /* GraphQL */ `
         image
         link
         bookComments {
+          nextToken
+        }
+        users {
           nextToken
         }
         createdAt
@@ -133,7 +263,6 @@ export const onDeleteBookComment = /* GraphQL */ `
       comment
       commentBook {
         id
-        userId
         title
         authors
         description
@@ -143,8 +272,65 @@ export const onDeleteBookComment = /* GraphQL */ `
         bookComments {
           nextToken
         }
+        users {
+          nextToken
+        }
         createdAt
         updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateUser = /* GraphQL */ `
+  subscription OnCreateUser {
+    onCreateUser {
+      id
+      userId
+      books {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateUser = /* GraphQL */ `
+  subscription OnUpdateUser {
+    onUpdateUser {
+      id
+      userId
+      books {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteUser = /* GraphQL */ `
+  subscription OnDeleteUser {
+    onDeleteUser {
+      id
+      userId
+      books {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       createdAt
       updatedAt

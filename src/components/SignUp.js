@@ -3,8 +3,11 @@ import { Link, useHistory} from "react-router-dom"
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import { API, graphqlOperation } from 'aws-amplify';
 
+import { createUser } from '../graphql/mutations';
 import { useAuth } from './contexts/AuthContext'
+
 
 const schema = yup.object().shape({
   userName: yup.string().required(),
@@ -23,7 +26,15 @@ const SignUp = () => {
     
     const onSubmit = async (data) => {
         try{
-          await signup( data.userName, data.password, data.email)
+          let response = await signup( data.userName, data.password, data.email)
+          console.log(response);
+          let response_ = await API.graphql(graphqlOperation(createUser,{
+            input:{
+              userId : response.userSub 
+            }
+          }))
+         
+          console.log(response_);
           history.push('/confirm-signup')
         }
         catch(err)
@@ -31,6 +42,8 @@ const SignUp = () => {
             console.log(err);
         }
     }
+
+    //230a2edb-5392-4d11-b643-7c3b8e29e056
 
     return (
         <div className='h-screen flex bg-gray-bg1'>
@@ -65,7 +78,7 @@ const SignUp = () => {
           </div>
           <div className="flex items-center justify-between">
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
-              Sign In
+              Sign Up
             </button>
             <Link to="/signin">
               <p className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">

@@ -16,5 +16,23 @@
         "bookifycefba961": {}
       }
     }
+  },
+  "bookify": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-bookify-bookify-173820-authRole",
+      "UnauthRoleArn": "arn:aws:iam::184117102551:role/amplify-bookify-bookify-173820-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::184117102551:role/amplify-bookify-bookify-173820-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-bookify-bookify-173820-deployment",
+      "UnauthRoleName": "amplify-bookify-bookify-173820-unauthRole",
+      "StackName": "amplify-bookify-bookify-173820",
+      "StackId": "arn:aws:cloudformation:ap-south-1:184117102551:stack/amplify-bookify-bookify-173820/4a28da50-1942-11ec-a7bc-0ac134090de2",
+      "AmplifyAppId": "d3cmhnr1ifpuxf"
+    },
+    "categories": {
+      "auth": {
+        "bookifycefba961": {}
+      }
+    }
   }
 }
