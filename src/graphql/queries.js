@@ -20,7 +20,7 @@ export const getBook = /* GraphQL */ `
         }
         nextToken
       }
-      users {
+      user {
         items {
           id
           createdAt
@@ -51,7 +51,7 @@ export const listBooks = /* GraphQL */ `
         bookComments {
           nextToken
         }
-        users {
+        user {
           nextToken
         }
         createdAt
@@ -67,8 +67,7 @@ export const getUserBooks = /* GraphQL */ `
       id
       user {
         id
-        userId
-        books {
+        book {
           nextToken
         }
         createdAt
@@ -85,7 +84,7 @@ export const getUserBooks = /* GraphQL */ `
         bookComments {
           nextToken
         }
-        users {
+        user {
           nextToken
         }
         createdAt
@@ -107,7 +106,6 @@ export const listUserBooks = /* GraphQL */ `
         id
         user {
           id
-          userId
           createdAt
           updatedAt
         }
@@ -145,7 +143,7 @@ export const getBookComment = /* GraphQL */ `
         bookComments {
           nextToken
         }
-        users {
+        user {
           nextToken
         }
         createdAt
@@ -188,8 +186,7 @@ export const getUser = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {
       id
-      userId
-      books {
+      book {
         items {
           id
           createdAt
@@ -211,12 +208,8 @@ export const listUsers = /* GraphQL */ `
     listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        userId
-        books {
+        book {
           nextToken
-          items {
-            
-          }
         }
         createdAt
         updatedAt

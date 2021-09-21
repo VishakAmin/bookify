@@ -30,10 +30,9 @@ const SignUp = () => {
           console.log(response);
           let response_ = await API.graphql(graphqlOperation(createUser,{
             input:{
-              userId : response.userSub 
+              id : response.userSub 
             }
           }))
-         
           console.log(response_);
           history.push('/confirm-signup')
         }

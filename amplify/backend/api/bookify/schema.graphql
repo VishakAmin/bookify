@@ -7,7 +7,7 @@ type Book @model {
   image:String
   link: String
   bookComments: [BookComment] @connection(name: "BookComments" )
-  users: [UserBooks] @connection(name: "BookUser")
+  user: [UserBooks] @connection(name: "BookUser")
 }
 
 type UserBooks @model {
@@ -22,9 +22,8 @@ type BookComment @model {
   commentBook: Book @connection(name: "BookComments" )
 }
 
-type User @model {
-  id: ID!
-  userId: String!
-  books : [UserBooks] @connection(name: "UserBook")
+type User @model {      
+  id: String!
+  book : [UserBooks] @connection(name: "UserBook")
 }
  

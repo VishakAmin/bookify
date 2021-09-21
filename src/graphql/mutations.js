@@ -23,7 +23,7 @@ export const createBook = /* GraphQL */ `
         }
         nextToken
       }
-      users {
+      user {
         items {
           id
           createdAt
@@ -58,7 +58,7 @@ export const updateBook = /* GraphQL */ `
         }
         nextToken
       }
-      users {
+      user {
         items {
           id
           createdAt
@@ -93,7 +93,7 @@ export const deleteBook = /* GraphQL */ `
         }
         nextToken
       }
-      users {
+      user {
         items {
           id
           createdAt
@@ -115,8 +115,7 @@ export const createUserBooks = /* GraphQL */ `
       id
       user {
         id
-        userId
-        books {
+        book {
           nextToken
         }
         createdAt
@@ -133,8 +132,7 @@ export const createUserBooks = /* GraphQL */ `
         bookComments {
           nextToken
         }
-        users {
-          userId
+        user {
           nextToken
         }
         createdAt
@@ -154,8 +152,7 @@ export const updateUserBooks = /* GraphQL */ `
       id
       user {
         id
-        userId
-        books {
+        book {
           nextToken
         }
         createdAt
@@ -172,7 +169,7 @@ export const updateUserBooks = /* GraphQL */ `
         bookComments {
           nextToken
         }
-        users {
+        user {
           nextToken
         }
         createdAt
@@ -192,8 +189,7 @@ export const deleteUserBooks = /* GraphQL */ `
       id
       user {
         id
-        userId
-        books {
+        book {
           nextToken
         }
         createdAt
@@ -210,7 +206,7 @@ export const deleteUserBooks = /* GraphQL */ `
         bookComments {
           nextToken
         }
-        users {
+        user {
           nextToken
         }
         createdAt
@@ -240,7 +236,7 @@ export const createBookComment = /* GraphQL */ `
         bookComments {
           nextToken
         }
-        users {
+        user {
           nextToken
         }
         createdAt
@@ -270,7 +266,7 @@ export const updateBookComment = /* GraphQL */ `
         bookComments {
           nextToken
         }
-        users {
+        user {
           nextToken
         }
         createdAt
@@ -300,7 +296,7 @@ export const deleteBookComment = /* GraphQL */ `
         bookComments {
           nextToken
         }
-        users {
+        user {
           nextToken
         }
         createdAt
@@ -318,8 +314,7 @@ export const createUser = /* GraphQL */ `
   ) {
     createUser(input: $input, condition: $condition) {
       id
-      userId
-      books {
+      book {
         items {
           id
           createdAt
@@ -339,8 +334,7 @@ export const updateUser = /* GraphQL */ `
   ) {
     updateUser(input: $input, condition: $condition) {
       id
-      userId
-      books {
+      book {
         items {
           id
           createdAt
@@ -360,8 +354,7 @@ export const deleteUser = /* GraphQL */ `
   ) {
     deleteUser(input: $input, condition: $condition) {
       id
-      userId
-      books {
+      book {
         items {
           id
           createdAt

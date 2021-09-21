@@ -25,6 +25,8 @@ const Books = () => {
     const [myBooks, setMyBooks] = useState()
     const {user} = useAuth()
 
+    let userId = user.attributes.sub
+
   const handleSubmit = () => {
     axios.get(`https://www.googleapis.com/books/v1/volumes?q=${searchKey}&key=${process.env.REACT_APP_API_KEY}`) 
       .then((response) => {
@@ -65,7 +67,7 @@ const removeBook = async (title) => {
 
 const addBooks = async ({title, authors, description, published, image, link}) => {
   try{
-    console.log("USER",user);
+    console.log("USER",userId);
       const book = {title, authors, description, published, image, link}
       let  allBooks = await API.graphql(graphqlOperation(listBooks,{
           filter : {
@@ -79,37 +81,33 @@ const addBooks = async ({title, authors, description, published, image, link}) =
 
       if(allBooks.data.listBooks.items.length > 0){
         let response = await API.graphql(graphqlOperation(createUserBooks, {
-          input:{
-           userBooksBookId: allBooks.data.listBooks.items[0].id,
-           userBooksUserId: user.attributes.sub
+          input: {
+            userBooksUserId: userId,
+            userBooksBookId: allBooks.data.listBooks.items[0].id
           }
         }))
         console.log(response);          
       }
       else{
-        console.log("WATCH HERE",user.attributes.sub);
+        
           let response = await API.graphql(graphqlOperation(createBook, {input:book}))
+          console.log(response.data.createBook.id);
           let response_ = await API.graphql(graphqlOperation(createUserBooks, {
            input:{
-            userBooksBookId: response.data.createBook.id,
-            userBooksUserId: user.attributes.sub
+             userBooksUserId: userId,
+             userBooksBookId: response.data.createBook.id
            }
          })) 
          console.log(response, response_);
       }
 
-     
-      fetchBooks()
   }
   catch(err){
       console.log("Error in creating", err)
   }
 }
 
-console.log(user.attributes.sub);
-
-
-//console.log("REDUCER", books);
+console.log("REDUCER", userId);
 
 useEffect(() => {
     fetchBooks()
