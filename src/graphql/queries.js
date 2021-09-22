@@ -207,14 +207,36 @@ export const listUsers = /* GraphQL */ `
   ) {
     listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
-        id
-        book {
-          nextToken
+      id
+      createdAt
+      updatedAt
+      book {
+        items {
+          createdAt
+          updatedAt
+          id
+          book {
+            authors
+            createdAt
+            description
+            id
+            image
+            link
+            published
+            title
+            updatedAt
+            bookComments {
+              items {
+                comment
+                createdAt
+                id
+                updatedAt
+              }
+            }
+          }
         }
-        createdAt
-        updatedAt
       }
-      nextToken
+    }
     }
   }
 `;

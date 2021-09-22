@@ -1,9 +1,9 @@
 import {Auth, API, graphqlOperation } from 'aws-amplify'
-import React,{useEffect, useState} from 'react'
+import React,{useEffect, useState, useCallback} from 'react'
 import { toast } from 'react-toastify';
 
 import { deleteBook,createBookComment, deleteBookComment } from '../graphql/mutations'
-import { listBooks } from '../graphql/queries'
+import { listUsers } from '../graphql/queries'
 import { useAuth } from './contexts/AuthContext';
 import MyBooksItem from './MyBooksItem'
 
@@ -37,31 +37,30 @@ const MyBooks = () => {
         }
     }
 
-    const fetchBooks = async () => {
+    const fetchBooks = useCallback(async () => {
        
         try{
-            const filter = {
-                userId: {
-                    eq: user.attributes.sub
-                }
-            };
-            console.log("USER IS ", user.attributes.sub  );
-            const bookData = await API.graphql(graphqlOperation(listBooks,{
-                filter :  filter
+            const userData = await API.graphql(graphqlOperation(listUsers,{
+                filter : { id : {eq: user.attributes.sub } }
               }))
-            console.log("MY NOOKS",bookData);
-            console.log("dasdasd",bookData);
-            setBooks(bookData.data.listBooks.items);
+
+              console.log("TIMESS",userData.data.listUsers.items[0]);
+
+              setBooks(userData.data.listUsers.items[0].book);
         }
         catch(err){
-            console.log("Error fetching", err);
+            console.log("Error fetching...", err.errors);
         }
-    }
-
+    },[])
 
     const removeBooks = async (id,title) => {
         try{
-            await API.graphql(graphqlOperation(deleteBook, {input:{id:id}}))
+            await API.graphql(graphqlOperation(deleteBook, 
+                {
+                    input:{
+                        id:id
+                    }
+            }))
             setBooks(books.filter(book => book.id !== id))
             toast.error(`${title} Deleted Successfully`);
         }
@@ -89,7 +88,7 @@ const MyBooks = () => {
         console.log(response, id);   
     }
     
-
+    console.log("sasasasasasasasasasasas",  books);
 
     return ( 
         <> 
@@ -103,18 +102,18 @@ const MyBooks = () => {
         </select>
         </label>
         </div>
-            {books.length > 0 ? (
-             books.map((book) => (
+            {books && books.book.items.length > 0 ? (
+             books.book.items.map((book) => (
                     <MyBooksItem 
-                    key={book.id}
-                    id={book.id}
-                    title={book.title}
-                    authors={book.authors}
-                    description={book.description}
-                    image={book.image}
-                    link={book.link}
-                    published={book.published}
-                    comments={book.bookComments.items}
+                    key={book.book.id}
+                    id={book.book.id}
+                    title={book.book.title}
+                    authors={book.items[0].book.items.book.authors}
+                    description={book.items[0].book.items.book.description}
+                    image={book.items[0].book.items.book.image}
+                    link={book.items[0].book.items.book.link}
+                    published={book.items[0].book.items.book.published}
+                    comments={book.items[0].book.items.book.bookComments.items}
                     removeBooks = {removeBooks}
                     addComment={addComment}
                     deleteComment = {deleteComment}

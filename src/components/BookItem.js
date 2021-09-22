@@ -8,6 +8,7 @@ const BookItem = ({title, authors, description, published, image, link, books,bo
     
     useEffect(() => {
         const fetchUser = async() => { 
+
             try{
                 let user =  await Auth.currentAuthenticatedUser();
                 await setSignInUser(user.attributes.sub)
@@ -27,6 +28,8 @@ const BookItem = ({title, authors, description, published, image, link, books,bo
     const removeBooks =  (e) => {
         removeBook(e.target.name)
     }
+    
+
 
     return (
      <div className="max-w-xs w-60 m-7 rounded overflow-hidden shadow-xl card m-2  border-gray-500 rounded-lg hover:shadow-md hover:border-opacity-0 transform hover:-translate-y-1 transition-all duration-300">

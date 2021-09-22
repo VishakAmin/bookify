@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 
 import BookItem from './BookItem'
 import SearchBox from './UI/SearchBox'
-import { listBooks } from '../graphql/queries'
+import { listBooks, listUsers } from '../graphql/queries'
 import { createBook, createUserBooks, deleteBook } from '../graphql/mutations'
 import { useAuth } from './contexts/AuthContext';
 
@@ -39,12 +39,22 @@ const Books = () => {
 
   const fetchBooks = useCallback(async () => {
     try{
-        const booksData = await API.graphql(graphqlOperation(listBooks,{
-          filter : { userId : {eq: user.attributes.sub } }
-        }))
 
-        console.log("TIMESS",booksData);
-        dispatch({type:"fetch-books", payload: booksData.data.listBooks.items})
+        const userData = await API.graphql(graphqlOperation(listUsers,{
+          filter : { id : {eq: user.attributes.sub } }
+        }))
+        console.log("TIMESS",userData.data.listUsers.items[0].book.items);
+
+    //    setMyBooks(userData.data.listUsers.items[0].book.items)
+
+        // const booksData = await API.graphql(graphqlOperation(listBooks,{
+        //   filter : { userId : {eq: user.attributes.sub } }
+        // }))
+
+
+       
+
+        dispatch({type:"fetch-books", payload:userData.data.listUsers.items[0].book.items})
         // setMyBooks(todoData.data.listBooks.items);
     }
     catch(err){
@@ -106,8 +116,7 @@ const addBooks = async ({title, authors, description, published, image, link}) =
       console.log("Error in creating", err)
   }
 }
-
-console.log("REDUCER", userId);
+console.log("REDUCER", books[0]);
 
 useEffect(() => {
     fetchBooks()
@@ -130,8 +139,8 @@ useEffect(() => {
                    published ={item.volumeInfo.publishedDate}
                    image={item.volumeInfo.imageLinks.thumbnail ? item.volumeInfo.imageLinks.thumbnail : "N/A"}
                    link={item.volumeInfo.previewLink}
-                   bookAdded ={books[0] && books[0].map(book => book.title )}
-                   bookId = {books[0] && books[0].map(book => book.id)}
+                   bookAdded ={books[0] && books[0].map(book => book.book.title )}
+                   bookId = {books[0] && books[0].map(book => book.book.id)}
                    books={books}
                   removeBook={removeBook}
                   addBook={addBooks}
