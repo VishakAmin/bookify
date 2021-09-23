@@ -11,10 +11,13 @@ export const onCreateBook = /* GraphQL */ `
       published
       image
       link
+      etag
       bookComments {
         items {
           id
           comment
+          userId
+          userName
           createdAt
           updatedAt
         }
@@ -43,10 +46,13 @@ export const onUpdateBook = /* GraphQL */ `
       published
       image
       link
+      etag
       bookComments {
         items {
           id
           comment
+          userId
+          userName
           createdAt
           updatedAt
         }
@@ -75,10 +81,13 @@ export const onDeleteBook = /* GraphQL */ `
       published
       image
       link
+      etag
       bookComments {
         items {
           id
           comment
+          userId
+          userName
           createdAt
           updatedAt
         }
@@ -117,6 +126,7 @@ export const onCreateUserBooks = /* GraphQL */ `
         published
         image
         link
+        etag
         bookComments {
           nextToken
         }
@@ -151,6 +161,7 @@ export const onUpdateUserBooks = /* GraphQL */ `
         published
         image
         link
+        etag
         bookComments {
           nextToken
         }
@@ -185,6 +196,7 @@ export const onDeleteUserBooks = /* GraphQL */ `
         published
         image
         link
+        etag
         bookComments {
           nextToken
         }
@@ -204,6 +216,8 @@ export const onCreateBookComment = /* GraphQL */ `
     onCreateBookComment {
       id
       comment
+      userId
+      userName
       commentBook {
         id
         title
@@ -212,6 +226,7 @@ export const onCreateBookComment = /* GraphQL */ `
         published
         image
         link
+        etag
         bookComments {
           nextToken
         }
@@ -231,6 +246,8 @@ export const onUpdateBookComment = /* GraphQL */ `
     onUpdateBookComment {
       id
       comment
+      userId
+      userName
       commentBook {
         id
         title
@@ -239,6 +256,7 @@ export const onUpdateBookComment = /* GraphQL */ `
         published
         image
         link
+        etag
         bookComments {
           nextToken
         }
@@ -258,6 +276,8 @@ export const onDeleteBookComment = /* GraphQL */ `
     onDeleteBookComment {
       id
       comment
+      userId
+      userName
       commentBook {
         id
         title
@@ -266,6 +286,7 @@ export const onDeleteBookComment = /* GraphQL */ `
         published
         image
         link
+        etag
         bookComments {
           nextToken
         }

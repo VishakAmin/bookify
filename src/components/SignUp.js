@@ -26,14 +26,13 @@ const SignUp = () => {
     
     const onSubmit = async (data) => {
         try{
-          let response = await signup( data.userName, data.password, data.email)
-          console.log(response);
-          let response_ = await API.graphql(graphqlOperation(createUser,{
+          const signupResponse = await signup( data.userName, data.password, data.email)
+         
+          let createUserResponse = await API.graphql(graphqlOperation(createUser,{
             input:{
-              id : response.userSub 
+              id : signupResponse.userSub 
             }
           }))
-          console.log(response_);
           history.push('/confirm-signup')
         }
         catch(err)
@@ -41,8 +40,6 @@ const SignUp = () => {
             console.log(err);
         }
     }
-
-    //230a2edb-5392-4d11-b643-7c3b8e29e056
 
     return (
         <div className='h-screen flex bg-gray-bg1'>

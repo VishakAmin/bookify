@@ -3,9 +3,10 @@ type Book @model {
   title: String!
   authors: String
   description: String
-  published: AWSDate
+  published: String
   image:String
   link: String
+  etag:String
   bookComments: [BookComment] @connection(name: "BookComments" )
   user: [UserBooks] @connection(name: "BookUser")
 }
@@ -19,6 +20,8 @@ type UserBooks @model {
 type BookComment @model {
   id: ID!
   comment: String 
+  userId: String
+  userName: String
   commentBook: Book @connection(name: "BookComments" )
 }
 

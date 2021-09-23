@@ -5,17 +5,11 @@ import { useAuth } from './contexts/AuthContext'
 
 
 const PrivateRoute = ({component: Component, ...rest}) => {
-    //const [signInUser, setSignInUser] = useState(null)
    // const [isLoading, setIsLoadingUser] = useState(true)
     const {user} = useAuth() 
-
-    // Do get current user from context api.
-   
     // if(isLoading){
     //     return <p>Loading........</p>
     // }
-
-    console.log(user)
 
     return ( 
         <Route

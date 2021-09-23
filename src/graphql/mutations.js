@@ -14,10 +14,13 @@ export const createBook = /* GraphQL */ `
       published
       image
       link
+      etag
       bookComments {
         items {
           id
           comment
+          userId
+          userName
           createdAt
           updatedAt
         }
@@ -49,10 +52,13 @@ export const updateBook = /* GraphQL */ `
       published
       image
       link
+      etag
       bookComments {
         items {
           id
           comment
+          userId
+          userName
           createdAt
           updatedAt
         }
@@ -84,10 +90,13 @@ export const deleteBook = /* GraphQL */ `
       published
       image
       link
+      etag
       bookComments {
         items {
           id
           comment
+          userId
+          userName
           createdAt
           updatedAt
         }
@@ -129,6 +138,7 @@ export const createUserBooks = /* GraphQL */ `
         published
         image
         link
+        etag
         bookComments {
           nextToken
         }
@@ -166,6 +176,7 @@ export const updateUserBooks = /* GraphQL */ `
         published
         image
         link
+        etag
         bookComments {
           nextToken
         }
@@ -203,6 +214,7 @@ export const deleteUserBooks = /* GraphQL */ `
         published
         image
         link
+        etag
         bookComments {
           nextToken
         }
@@ -225,6 +237,8 @@ export const createBookComment = /* GraphQL */ `
     createBookComment(input: $input, condition: $condition) {
       id
       comment
+      userId
+      userName
       commentBook {
         id
         title
@@ -233,6 +247,7 @@ export const createBookComment = /* GraphQL */ `
         published
         image
         link
+        etag
         bookComments {
           nextToken
         }
@@ -255,6 +270,8 @@ export const updateBookComment = /* GraphQL */ `
     updateBookComment(input: $input, condition: $condition) {
       id
       comment
+      userId
+      userName
       commentBook {
         id
         title
@@ -263,6 +280,7 @@ export const updateBookComment = /* GraphQL */ `
         published
         image
         link
+        etag
         bookComments {
           nextToken
         }
@@ -285,6 +303,8 @@ export const deleteBookComment = /* GraphQL */ `
     deleteBookComment(input: $input, condition: $condition) {
       id
       comment
+      userId
+      userName
       commentBook {
         id
         title
@@ -293,6 +313,7 @@ export const deleteBookComment = /* GraphQL */ `
         published
         image
         link
+        etag
         bookComments {
           nextToken
         }

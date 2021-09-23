@@ -1,16 +1,14 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState } from 'react'
 import {Auth} from 'aws-amplify'
 
 
-const BookItem = ({title, authors, description, published, image, link, books,bookAdded, bookId, removeBook, addBook}) => {
+const BookItem = ({title, authors, description, published, image, link,bookAdded, etag,removeBook, addBook}) => {
     const [signInUser, setSignInUser] = useState("")
 
-    
     useEffect(() => {
         const fetchUser = async() => { 
-
             try{
-                let user =  await Auth.currentAuthenticatedUser();
+                const user =  await Auth.currentAuthenticatedUser();
                 await setSignInUser(user.attributes.sub)
             }
             catch(err) {
@@ -21,15 +19,12 @@ const BookItem = ({title, authors, description, published, image, link, books,bo
      },[])
 
     const addBooks = async () => {
-        console.log("Inside Add", signInUser);
-       addBook({title, authors, description, published, image, link, signInUser})
+       addBook({title, authors, description, published, image, link, signInUser,etag})
     }
 
     const removeBooks =  (e) => {
         removeBook(e.target.name)
     }
-    
-
 
     return (
      <div className="max-w-xs w-60 m-7 rounded overflow-hidden shadow-xl card m-2  border-gray-500 rounded-lg hover:shadow-md hover:border-opacity-0 transform hover:-translate-y-1 transition-all duration-300">

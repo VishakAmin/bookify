@@ -1,8 +1,8 @@
-import {Auth, API, graphqlOperation } from 'aws-amplify'
-import React,{useEffect, useState, useCallback} from 'react'
+import {API, graphqlOperation } from 'aws-amplify'
+import React,{useEffect, useState} from 'react'
 import { toast } from 'react-toastify';
 
-import { deleteBook,createBookComment, deleteBookComment } from '../graphql/mutations'
+import { createBookComment, deleteBookComment, deleteUserBooks } from '../graphql/mutations'
 import { listUsers } from '../graphql/queries'
 import { useAuth } from './contexts/AuthContext';
 import MyBooksItem from './MyBooksItem'
@@ -13,55 +13,46 @@ const MyBooks = () => {
     const [sortType, setSortType] = useState("")
     const {user} = useAuth()
 
+    const fetchBooks = async () => {
+        try{
+            const userData = await API.graphql(graphqlOperation(listUsers,{
+                filter : { id : {eq: user.attributes.sub } }
+              }))
+             // console.log("TIMESS",userData.data.listUsers.items[0].book.items);
+              setBooks(userData.data.listUsers.items[0].book.items);
+        }
+        catch(err){
+            console.log("Error fetching...", err.errors);
+        }
+    }
+
     useEffect(() => {
-    console.log(user.attributes.sub);
-    fetchBooks()
+        fetchBooks()
      },[])
 
     
     const handleSort = (e) => {
         setSortType(e.target.value)
+        // console.log(sortType);
+        // const sortArray = newBooks.sort((a,b) => {
+        //     return new Date(a.createdAt) - new Date(b.createdAt)
+        // })
 
-        const newBooks = [...books]
-        console.log(sortType);
-        const sortArray = newBooks.sort((a,b) => {
-            return new Date(a.createdAt) - new Date(b.createdAt)
-        })
-
-        console.log(sortArray);
-        if(sortType === "newest"){
-            setBooks(sortArray)
-        }
-        else{
-            setBooks(sortArray.reverse())
+        // console.log(sortArray);
+        if(sortType === "oldest"){
+            setBooks(books.reverse())             
         }
     }
 
-    const fetchBooks = useCallback(async () => {
-       
-        try{
-            const userData = await API.graphql(graphqlOperation(listUsers,{
-                filter : { id : {eq: user.attributes.sub } }
-              }))
-
-              console.log("TIMESS",userData.data.listUsers.items[0]);
-
-              setBooks(userData.data.listUsers.items[0].book);
-        }
-        catch(err){
-            console.log("Error fetching...", err.errors);
-        }
-    },[])
-
     const removeBooks = async (id,title) => {
         try{
-            await API.graphql(graphqlOperation(deleteBook, 
+            await API.graphql(graphqlOperation(deleteUserBooks, 
                 {
                     input:{
                         id:id
                     }
             }))
-            setBooks(books.filter(book => book.id !== id))
+            fetchBooks()
             toast.error(`${title} Deleted Successfully`);
         }
         catch(err){
@@ -69,26 +60,28 @@ const MyBooks = () => {
         }
     }
 
-
     const addComment = async(id, comment ) => {
-        let response = await API.graphql(graphqlOperation(createBookComment, 
+       await API.graphql(graphqlOperation(createBookComment, 
           { input:{
               comment:comment,
-              bookCommentCommentBookId: id
+              bookCommentCommentBookId: id,
+              userId: user.attributes.sub,
+              userName : user.username
       }}))
       fetchBooks()
       }
       
     const deleteComment = async(id) => {
-        let response = await API.graphql(graphqlOperation(deleteBookComment, 
-            { input:{
+       await API.graphql(graphqlOperation(deleteBookComment, 
+            { 
+                input:{
                     id:id
-            }}))
-        fetchBooks()
-        console.log(response, id);   
+            }
+        }))
+        fetchBooks()       
     }
     
-    console.log("sasasasasasasasasasasas",  books);
+
 
     return ( 
         <> 
@@ -96,24 +89,26 @@ const MyBooks = () => {
         <label className="block text-left w-36 ">
         <span className="text-gray-700">Sort by Added Date</span>
         <select className="form-select block w-full mt-1 border rounded" onChange={handleSort}>
-            <option value="" disabled selected>Choose</option>
+            <option  disabled defaultValue=" " selected>Choose</option>
             <option value="newest">Newest</option>
             <option value="oldest">Oldest</option> 
         </select>
         </label>
         </div>
-            {books && books.book.items.length > 0 ? (
-             books.book.items.map((book) => (
+            {books && books.length > 0 ? (
+             books.map((book) => (
                     <MyBooksItem 
                     key={book.book.id}
-                    id={book.book.id}
+                    id={book.id}
+                    bookid={book.book.id}
                     title={book.book.title}
-                    authors={book.items[0].book.items.book.authors}
-                    description={book.items[0].book.items.book.description}
-                    image={book.items[0].book.items.book.image}
-                    link={book.items[0].book.items.book.link}
-                    published={book.items[0].book.items.book.published}
-                    comments={book.items[0].book.items.book.bookComments.items}
+                    authors={book.book.authors}
+                    description={book.book.description}
+                    image={book.book.image}
+                    link={book.book.link}
+                    published={book.book.published}
+                    comments={book.book.bookComments.items}
+                    userId = {user.attributes.sub}
                     removeBooks = {removeBooks}
                     addComment={addComment}
                     deleteComment = {deleteComment}

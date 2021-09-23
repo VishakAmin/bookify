@@ -11,10 +11,13 @@ export const getBook = /* GraphQL */ `
       published
       image
       link
+      etag
       bookComments {
         items {
           id
           comment
+          userId
+          userName
           createdAt
           updatedAt
         }
@@ -48,6 +51,7 @@ export const listBooks = /* GraphQL */ `
         published
         image
         link
+        etag
         bookComments {
           nextToken
         }
@@ -81,6 +85,7 @@ export const getUserBooks = /* GraphQL */ `
         published
         image
         link
+        etag
         bookComments {
           nextToken
         }
@@ -117,6 +122,7 @@ export const listUserBooks = /* GraphQL */ `
           published
           image
           link
+          etag
           createdAt
           updatedAt
         }
@@ -132,6 +138,8 @@ export const getBookComment = /* GraphQL */ `
     getBookComment(id: $id) {
       id
       comment
+      userId
+      userName
       commentBook {
         id
         title
@@ -140,6 +148,7 @@ export const getBookComment = /* GraphQL */ `
         published
         image
         link
+        etag
         bookComments {
           nextToken
         }
@@ -164,6 +173,8 @@ export const listBookComments = /* GraphQL */ `
       items {
         id
         comment
+        userId
+        userName
         commentBook {
           id
           title
@@ -172,6 +183,7 @@ export const listBookComments = /* GraphQL */ `
           published
           image
           link
+          etag
           createdAt
           updatedAt
         }
@@ -224,10 +236,13 @@ export const listUsers = /* GraphQL */ `
             link
             published
             title
+            etag
             updatedAt
             bookComments {
               items {
                 comment
+                userId
+                userName
                 createdAt
                 id
                 updatedAt
@@ -240,3 +255,4 @@ export const listUsers = /* GraphQL */ `
     }
   }
 `;
+  

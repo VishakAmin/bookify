@@ -12,7 +12,7 @@ const ConfirmSignUp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try{
-            let response = await Auth.confirmSignUp(userName,authCode)
+            const response = await Auth.confirmSignUp(userName,authCode)
             console.log(response);
             history.push("/signin")
 

@@ -19,9 +19,7 @@ const SignIn = () => {
       resolver: yupResolver(schema)
     });
     
-    
     const onSubmit = async (data) => {
-      console.log(data);
       try{
              signin(data.userName, data.password).then((response) => {
                   userSignedIn().then((data) => {
