@@ -19,7 +19,7 @@ export const AuthProvider = ({children}) => {
 
     const fetchUser = async() => { 
         try{
-            let user =  await Auth.currentAuthenticatedUser();
+            const user =  await Auth.currentAuthenticatedUser();
             setSignInUser(user)
             setIsSignIn(true)
             setIsLoadingUser(true)

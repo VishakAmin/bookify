@@ -1,10 +1,13 @@
-import React,{useState} from 'react'
+import React from 'react'
 import { Link, useHistory} from "react-router-dom"
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import { API, graphqlOperation } from 'aws-amplify';
 
+import { createUser } from '../graphql/mutations';
 import { useAuth } from './contexts/AuthContext'
+
 
 const schema = yup.object().shape({
   userName: yup.string().required(),
@@ -23,7 +26,13 @@ const SignUp = () => {
     
     const onSubmit = async (data) => {
         try{
-          await signup( data.userName, data.password, data.email)
+          const signupResponse = await signup( data.userName, data.password, data.email)
+         
+          await API.graphql(graphqlOperation(createUser,{
+            input:{
+              id : signupResponse.userSub 
+            }
+          }))
           history.push('/confirm-signup')
         }
         catch(err)
@@ -65,7 +74,7 @@ const SignUp = () => {
           </div>
           <div className="flex items-center justify-between">
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
-              Sign In
+              Sign Up
             </button>
             <Link to="/signin">
               <p className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">

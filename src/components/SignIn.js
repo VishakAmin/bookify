@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React from 'react'
 import { Link, useHistory } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -19,9 +19,7 @@ const SignIn = () => {
       resolver: yupResolver(schema)
     });
     
-    
     const onSubmit = async (data) => {
-      console.log(data);
       try{
              signin(data.userName, data.password).then((response) => {
                   userSignedIn().then((data) => {

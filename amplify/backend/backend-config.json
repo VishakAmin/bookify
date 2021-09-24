@@ -34,7 +34,7 @@
             "authenticationType": "API_KEY",
             "apiKeyConfig": {
               "apiKeyExpirationDays": 15,
-              "description": "books"
+              "description": ""
             }
           },
           "additionalAuthenticationProviders": []

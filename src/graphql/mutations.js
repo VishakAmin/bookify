@@ -8,17 +8,27 @@ export const createBook = /* GraphQL */ `
   ) {
     createBook(input: $input, condition: $condition) {
       id
-      userId
       title
       authors
       description
       published
       image
       link
+      etag
       bookComments {
         items {
           id
           comment
+          userId
+          userName
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      user {
+        items {
+          id
           createdAt
           updatedAt
         }
@@ -36,17 +46,27 @@ export const updateBook = /* GraphQL */ `
   ) {
     updateBook(input: $input, condition: $condition) {
       id
-      userId
       title
       authors
       description
       published
       image
       link
+      etag
       bookComments {
         items {
           id
           comment
+          userId
+          userName
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      user {
+        items {
+          id
           createdAt
           updatedAt
         }
@@ -64,21 +84,145 @@ export const deleteBook = /* GraphQL */ `
   ) {
     deleteBook(input: $input, condition: $condition) {
       id
-      userId
       title
       authors
       description
       published
       image
       link
+      etag
       bookComments {
         items {
           id
           comment
+          userId
+          userName
           createdAt
           updatedAt
         }
         nextToken
+      }
+      user {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createUserBooks = /* GraphQL */ `
+  mutation CreateUserBooks(
+    $input: CreateUserBooksInput!
+    $condition: ModelUserBooksConditionInput
+  ) {
+    createUserBooks(input: $input, condition: $condition) {
+      id
+      user {
+        id
+        book {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      book {
+        id
+        title
+        authors
+        description
+        published
+        image
+        link
+        etag
+        bookComments {
+          nextToken
+        }
+        user {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateUserBooks = /* GraphQL */ `
+  mutation UpdateUserBooks(
+    $input: UpdateUserBooksInput!
+    $condition: ModelUserBooksConditionInput
+  ) {
+    updateUserBooks(input: $input, condition: $condition) {
+      id
+      user {
+        id
+        book {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      book {
+        id
+        title
+        authors
+        description
+        published
+        image
+        link
+        etag
+        bookComments {
+          nextToken
+        }
+        user {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteUserBooks = /* GraphQL */ `
+  mutation DeleteUserBooks(
+    $input: DeleteUserBooksInput!
+    $condition: ModelUserBooksConditionInput
+  ) {
+    deleteUserBooks(input: $input, condition: $condition) {
+      id
+      user {
+        id
+        book {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      book {
+        id
+        title
+        authors
+        description
+        published
+        image
+        link
+        etag
+        bookComments {
+          nextToken
+        }
+        user {
+          nextToken
+        }
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
@@ -93,16 +237,21 @@ export const createBookComment = /* GraphQL */ `
     createBookComment(input: $input, condition: $condition) {
       id
       comment
+      userId
+      userName
       commentBook {
         id
-        userId
         title
         authors
         description
         published
         image
         link
+        etag
         bookComments {
+          nextToken
+        }
+        user {
           nextToken
         }
         createdAt
@@ -121,16 +270,21 @@ export const updateBookComment = /* GraphQL */ `
     updateBookComment(input: $input, condition: $condition) {
       id
       comment
+      userId
+      userName
       commentBook {
         id
-        userId
         title
         authors
         description
         published
         image
         link
+        etag
         bookComments {
+          nextToken
+        }
+        user {
           nextToken
         }
         createdAt
@@ -149,20 +303,85 @@ export const deleteBookComment = /* GraphQL */ `
     deleteBookComment(input: $input, condition: $condition) {
       id
       comment
+      userId
+      userName
       commentBook {
         id
-        userId
         title
         authors
         description
         published
         image
         link
+        etag
         bookComments {
+          nextToken
+        }
+        user {
           nextToken
         }
         createdAt
         updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createUser = /* GraphQL */ `
+  mutation CreateUser(
+    $input: CreateUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    createUser(input: $input, condition: $condition) {
+      id
+      book {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateUser = /* GraphQL */ `
+  mutation UpdateUser(
+    $input: UpdateUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    updateUser(input: $input, condition: $condition) {
+      id
+      book {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteUser = /* GraphQL */ `
+  mutation DeleteUser(
+    $input: DeleteUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    deleteUser(input: $input, condition: $condition) {
+      id
+      book {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       createdAt
       updatedAt

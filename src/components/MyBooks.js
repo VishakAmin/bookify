@@ -1,9 +1,9 @@
-import {Auth, API, graphqlOperation } from 'aws-amplify'
-import React,{useEffect, useState} from 'react'
+import {API, graphqlOperation } from 'aws-amplify'
+import React,{useEffect, useState, useCallback} from 'react'
 import { toast } from 'react-toastify';
 
-import { deleteBook,createBookComment, deleteBookComment } from '../graphql/mutations'
-import { listBooks } from '../graphql/queries'
+import { createBookComment, deleteBookComment, deleteUserBooks } from '../graphql/mutations'
+import { listUsers } from '../graphql/queries'
 import { useAuth } from './contexts/AuthContext';
 import MyBooksItem from './MyBooksItem'
 
@@ -13,56 +13,46 @@ const MyBooks = () => {
     const [sortType, setSortType] = useState("")
     const {user} = useAuth()
 
+    const fetchBooks = useCallback(async () => {
+        try{
+            const userData = await API.graphql(graphqlOperation(listUsers,{
+                filter : { id : {eq: user.attributes.sub } }
+              }))
+             // console.log("TIMESS",userData.data.listUsers.items[0].book.items);
+              setBooks(userData.data.listUsers.items[0].book.items);
+        }
+        catch(err){
+            console.log("Error fetching...", err.errors);
+        }
+    },[user.attributes.sub])
+
     useEffect(() => {
-    console.log(user.attributes.sub);
-    fetchBooks()
-     },[])
+        fetchBooks()
+     },[fetchBooks])
 
     
     const handleSort = (e) => {
         setSortType(e.target.value)
+        // console.log(sortType);
+        // const sortArray = newBooks.sort((a,b) => {
+        //     return new Date(a.createdAt) - new Date(b.createdAt)
+        // })
 
-        const newBooks = [...books]
-        console.log(sortType);
-        const sortArray = newBooks.sort((a,b) => {
-            return new Date(a.createdAt) - new Date(b.createdAt)
-        })
-
-        console.log(sortArray);
-        if(sortType === "newest"){
-            setBooks(sortArray)
-        }
-        else{
-            setBooks(sortArray.reverse())
+        // console.log(sortArray);
+        if(sortType === "oldest"){
+            setBooks(books.reverse())             
         }
     }
-
-    const fetchBooks = async () => {
-       
-        try{
-            const filter = {
-                userId: {
-                    eq: user.attributes.sub
-                }
-            };
-            console.log("USER IS ", user.attributes.sub  );
-            const bookData = await API.graphql(graphqlOperation(listBooks,{
-                filter :  filter
-              }))
-            console.log("MY NOOKS",bookData);
-            console.log("dasdasd",bookData);
-            setBooks(bookData.data.listBooks.items);
-        }
-        catch(err){
-            console.log("Error fetching", err);
-        }
-    }
-
 
     const removeBooks = async (id,title) => {
         try{
-            await API.graphql(graphqlOperation(deleteBook, {input:{id:id}}))
-            setBooks(books.filter(book => book.id !== id))
+            await API.graphql(graphqlOperation(deleteUserBooks, 
+                {
+                    input:{
+                        id:id
+                    }
+            }))
+            fetchBooks()
             toast.error(`${title} Deleted Successfully`);
         }
         catch(err){
@@ -70,51 +60,53 @@ const MyBooks = () => {
         }
     }
 
-
     const addComment = async(id, comment ) => {
-        let response = await API.graphql(graphqlOperation(createBookComment, 
+       await API.graphql(graphqlOperation(createBookComment, 
           { input:{
               comment:comment,
-              bookCommentCommentBookId: id
+              bookCommentCommentBookId: id,
+              userId: user.attributes.sub,
+              userName : user.username
       }}))
       fetchBooks()
       }
       
     const deleteComment = async(id) => {
-        let response = await API.graphql(graphqlOperation(deleteBookComment, 
-            { input:{
+       await API.graphql(graphqlOperation(deleteBookComment, 
+            { 
+                input:{
                     id:id
-            }}))
-        fetchBooks()
-        console.log(response, id);   
+            }
+        }))
+        fetchBooks()       
     }
     
-
-
     return ( 
         <> 
         <div className="flex justify-end pr-56">
         <label className="block text-left w-36 ">
         <span className="text-gray-700">Sort by Added Date</span>
-        <select className="form-select block w-full mt-1 border rounded" onChange={handleSort}>
-            <option value="" disabled selected>Choose</option>
+        <select className="form-select block w-full mt-1 border rounded" onChange={handleSort} defaultValue="choose">
+            <option disabled value="choose" >Choose</option>
             <option value="newest">Newest</option>
             <option value="oldest">Oldest</option> 
         </select>
         </label>
         </div>
-            {books.length > 0 ? (
+            {books && books.length > 0 ? (
              books.map((book) => (
                     <MyBooksItem 
-                    key={book.id}
+                    key={book.book.etag}
+                    bookid={book.book.id}
                     id={book.id}
-                    title={book.title}
-                    authors={book.authors}
-                    description={book.description}
-                    image={book.image}
-                    link={book.link}
-                    published={book.published}
-                    comments={book.bookComments.items}
+                    title={book.book.title}
+                    authors={book.book.authors}
+                    description={book.book.description}
+                    image={book.book.image}
+                    link={book.book.link}
+                    published={book.book.published}
+                    comments={book.book.bookComments.items}
+                    userId = {user.attributes.sub}
                     removeBooks = {removeBooks}
                     addComment={addComment}
                     deleteComment = {deleteComment}

@@ -5,17 +5,27 @@ export const getBook = /* GraphQL */ `
   query GetBook($id: ID!) {
     getBook(id: $id) {
       id
-      userId
       title
       authors
       description
       published
       image
       link
+      etag
       bookComments {
         items {
           id
           comment
+          userId
+          userName
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      user {
+        items {
+          id
           createdAt
           updatedAt
         }
@@ -35,20 +45,86 @@ export const listBooks = /* GraphQL */ `
     listBooks(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        userId
         title
         authors
         description
         published
         image
         link
+        etag
         bookComments {
-          items {
-            id
-            comment
-            createdAt
-            updatedAt
-          }
+          nextToken
+        }
+        user {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getUserBooks = /* GraphQL */ `
+  query GetUserBooks($id: ID!) {
+    getUserBooks(id: $id) {
+      id
+      user {
+        id
+        book {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      book {
+        id
+        title
+        authors
+        description
+        published
+        image
+        link
+        etag
+        bookComments {
+          nextToken
+        }
+        user {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listUserBooks = /* GraphQL */ `
+  query ListUserBooks(
+    $filter: ModelUserBooksFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listUserBooks(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        user {
+          id
+          createdAt
+          updatedAt
+        }
+        book {
+          id
+          title
+          authors
+          description
+          published
+          image
+          link
+          etag
+          createdAt
+          updatedAt
         }
         createdAt
         updatedAt
@@ -62,16 +138,21 @@ export const getBookComment = /* GraphQL */ `
     getBookComment(id: $id) {
       id
       comment
+      userId
+      userName
       commentBook {
         id
-        userId
         title
         authors
         description
         published
         image
         link
+        etag
         bookComments {
+          nextToken
+        }
+        user {
           nextToken
         }
         createdAt
@@ -92,15 +173,17 @@ export const listBookComments = /* GraphQL */ `
       items {
         id
         comment
+        userId
+        userName
         commentBook {
           id
-          userId
           title
           authors
           description
           published
           image
           link
+          etag
           createdAt
           updatedAt
         }
@@ -111,3 +194,65 @@ export const listBookComments = /* GraphQL */ `
     }
   }
 `;
+export const getUser = /* GraphQL */ `
+  query GetUser($id: ID!) {
+    getUser(id: $id) {
+      id
+      book {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listUsers = /* GraphQL */ `
+  query ListUsers(
+    $filter: ModelUserFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+      id
+      createdAt
+      updatedAt
+      book {
+        items {
+          createdAt
+          updatedAt
+          id
+          book {
+            authors
+            createdAt
+            description
+            id
+            image
+            link
+            published
+            title
+            etag
+            updatedAt
+            bookComments {
+              items {
+                comment
+                userId
+                userName
+                createdAt
+                id
+                updatedAt
+              }
+            }
+          }
+        }
+      }
+    }
+    }
+  }
+`;
+  
