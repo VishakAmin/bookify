@@ -29,6 +29,7 @@ const Books = () => {
     const handleSubmit = () => {
       axios.get(`https://www.googleapis.com/books/v1/volumes?q=${searchKey}&key=${process.env.REACT_APP_API_KEY}`) 
         .then((response) => {
+          console.log(response.data.items);
           setbookData(response.data.items)           
       })
       .catch((error) => {
@@ -46,7 +47,7 @@ const Books = () => {
         catch(err){
             console.log("Error fetching", err);
         }
-    },[])
+    },[user.attributes.sub])
 
     const removeBook = async (title) => {
       const bookToRemove = books.filter((book) => book.book.title === title )
@@ -105,7 +106,7 @@ const Books = () => {
 
     useEffect(() => {
         fetchBooks()
-    },[])
+    },[fetchBooks])
 
     return (
         <div>

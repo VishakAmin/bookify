@@ -1,5 +1,5 @@
 import {API, graphqlOperation } from 'aws-amplify'
-import React,{useEffect, useState} from 'react'
+import React,{useEffect, useState, useCallback} from 'react'
 import { toast } from 'react-toastify';
 
 import { createBookComment, deleteBookComment, deleteUserBooks } from '../graphql/mutations'
@@ -13,7 +13,7 @@ const MyBooks = () => {
     const [sortType, setSortType] = useState("")
     const {user} = useAuth()
 
-    const fetchBooks = async () => {
+    const fetchBooks = useCallback(async () => {
         try{
             const userData = await API.graphql(graphqlOperation(listUsers,{
                 filter : { id : {eq: user.attributes.sub } }
@@ -24,11 +24,11 @@ const MyBooks = () => {
         catch(err){
             console.log("Error fetching...", err.errors);
         }
-    }
+    },[user.attributes.sub])
 
     useEffect(() => {
         fetchBooks()
-     },[])
+     },[fetchBooks])
 
     
     const handleSort = (e) => {
@@ -81,15 +81,13 @@ const MyBooks = () => {
         fetchBooks()       
     }
     
-
-
     return ( 
         <> 
         <div className="flex justify-end pr-56">
         <label className="block text-left w-36 ">
         <span className="text-gray-700">Sort by Added Date</span>
-        <select className="form-select block w-full mt-1 border rounded" onChange={handleSort}>
-            <option  disabled defaultValue=" " selected>Choose</option>
+        <select className="form-select block w-full mt-1 border rounded" onChange={handleSort} defaultValue="choose">
+            <option disabled value="choose" >Choose</option>
             <option value="newest">Newest</option>
             <option value="oldest">Oldest</option> 
         </select>
@@ -98,9 +96,9 @@ const MyBooks = () => {
             {books && books.length > 0 ? (
              books.map((book) => (
                     <MyBooksItem 
-                    key={book.book.id}
-                    id={book.id}
+                    key={book.book.etag}
                     bookid={book.book.id}
+                    id={book.id}
                     title={book.book.title}
                     authors={book.book.authors}
                     description={book.book.description}

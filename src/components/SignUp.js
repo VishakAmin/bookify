@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React from 'react'
 import { Link, useHistory} from "react-router-dom"
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -28,7 +28,7 @@ const SignUp = () => {
         try{
           const signupResponse = await signup( data.userName, data.password, data.email)
          
-          let createUserResponse = await API.graphql(graphqlOperation(createUser,{
+          await API.graphql(graphqlOperation(createUser,{
             input:{
               id : signupResponse.userSub 
             }

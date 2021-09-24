@@ -1,7 +1,6 @@
 import moment from 'moment'
 import React,{useState} from 'react'
 
-
 const MyBooksItem = ({title, authors, comments ,description, published, image, link, removeBooks,id, addComment,deleteComment, bookid, userId}) => {
 
     const [comment, setComment] = useState("")
@@ -61,13 +60,13 @@ const MyBooksItem = ({title, authors, comments ,description, published, image, l
                             comments.map((com) => (
                                 <>
                                 <div>
-                                <div class="w-1/2 bg-white p-2 pt-4 rounded">
-                                    <div class="flex ml-3">
+                                <div className="w-1/2 bg-white p-2 pt-4 rounded">
+                                    <div className="flex ml-3">
                                     <div>
                                         {
-                                            com.userId === userId ?   <h1 class="font-semibold align-center">You</h1> :   <h1 class="font-semibold align-center">{com.userName}</h1>
+                                            com.userId === userId ?   <h1 className="font-semibold align-center">You</h1> :   <h1 className="font-semibold align-center">{com.userName}</h1>
                                         }
-                                      <h1 class="italic align-center">On {moment(com.createdAt).format("dddd, MMMM Do YYYY, h:mm:ss a")}</h1>
+                                      <h1 className="italic align-center">On {moment(com.createdAt).format("dddd, MMMM Do YYYY, h:mm:ss a")}</h1>
                                     </div>
     
                                   </div> 
@@ -78,7 +77,7 @@ const MyBooksItem = ({title, authors, comments ,description, published, image, l
                                 {   com.userId === userId ? 
 
                                      <button onClick={()=>deleteBookComment(com.id)} >
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg> 
                                 </button>
