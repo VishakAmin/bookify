@@ -208,7 +208,7 @@ export const getUser = /* GraphQL */ `
       }
       createdAt
       updatedAt
-    }
+    } 
   }
 `;
 export const listUsers = /* GraphQL */ `
