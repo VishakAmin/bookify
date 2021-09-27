@@ -36,10 +36,9 @@ const Books = () => {
       axios.get(`https://www.googleapis.com/books/v1/volumes?q=${searchKey}&maxResults=12&startIndex=${startIndex}&key=${process.env.REACT_APP_API_KEY}`) 
         .then((response) => {
           console.log(response.data);
-          console.log(startIndex);
+          console.log(startIndex)
           setbookData(bookData => [...bookData,...response.data.items])   
-          setTotalItems(response.data.totalItems)        
-          
+          setTotalItems(response.data.totalItems)
       })
       .catch((error) => {
       console.log(error)
@@ -117,28 +116,41 @@ const Books = () => {
         fetchBooks()
     },[fetchBooks])
 
-    const fetchMoreData = () => {
-        setStartIndex(prev => prev + 12)
-        console.log(startIndex);
-        handleSubmit()
+    const fetchMoreData = async () => {
+         setStartIndex(startIndex+12)
+         handleSubmit()
+    }
+
+    const onSearchClick = async () => {
+      await setStartIndex(0)
+      await setbookData([])
+      await handleSubmit()
+    }
+
+    const handleChange = (e) => {
+     setSearchKey(e.target.value)
+     setStartIndex(prev => 0)
     }
     
-    console.log(bookData,startIndex);
+    console.log(bookData,startIndex,totalItems);
     
     return (
         <div>
            <div className="flex justify-center">
-             <SearchBox  onChange={(e) => (setSearchKey(e.target.value))} onClick={handleSubmit}/>             
+             <SearchBox  onChange={handleChange} onClick={onSearchClick}/>             
            </div>
            {
-             bookData && totalItems? (
+             bookData && totalItems ? (
              <InfiniteScroll
              dataLength = {totalItems}
              hasMore={true} 
+             next={fetchMoreData}
+             endMessage ={
+               <p className="text-center text-3xl font-semibold"> Yay! You have seen it all </p>
+             }
              loader={ 
               <h4 className="text-center text-3xl font-semibold	">Loading...</h4>
             }
-             next={fetchMoreData}
           > 
            <div className= "flex flex-wrap content-start">                
             {(
@@ -160,7 +172,7 @@ const Books = () => {
             ) 
            }
         </div>
-        </InfiniteScroll>   
+        </InfiniteScroll>
         )
            :
             (

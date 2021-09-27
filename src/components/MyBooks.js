@@ -3,32 +3,40 @@ import React,{useEffect, useState, useCallback} from 'react'
 import { toast } from 'react-toastify';
 
 import { createBookComment, deleteBookComment, deleteUserBooks } from '../graphql/mutations'
-import { listUsers } from '../graphql/queries'
+import { getUser, listUsers } from '../graphql/queries'
 import { useAuth } from './contexts/AuthContext';
 import MyBooksItem from './MyBooksItem'
-
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const MyBooks = () => {
     const [books, setBooks] = useState([])
+    const [nextToken, setNextToken] = useState(null)
     const [sortType, setSortType] = useState("")
     const {user} = useAuth()
 
     const fetchBooks = useCallback(async () => {
+      
         try{
-            const userData = await API.graphql(graphqlOperation(listUsers,{
-                filter : { id : {eq: user.attributes.sub } }
-              }))
-             // console.log("TIMESS",userData.data.listUsers.items[0].book.items);
-              setBooks(userData.data.listUsers.items[0].book.items);
-        }
+              const bookData = await API.graphql(graphqlOperation(getUser,{
+                  id :  user.attributes.sub,
+                  limit:3,
+                  nextToken: nextToken
+                 }
+                 ))
+                console.log(bookData.data.getUser.book.items)
+                setBooks(books => [...books,...bookData.data.getUser.book.items])
+                setNextToken(bookData.data.getUser.book.nextToken)
+                console.log(bookData.data.getUser.book.nextToken);               
+            }
         catch(err){
-            console.log("Error fetching...", err.errors);
+            console.log("Error fetching...", err);
         }
     },[user.attributes.sub])
 
     useEffect(() => {
         fetchBooks()
      },[fetchBooks])
+
 
     
     const handleSort = (e) => {
@@ -81,6 +89,14 @@ const MyBooks = () => {
         fetchBooks()       
     }
     
+    const fetchMoreData = async () => {
+        console.log("FETCHMOREDATA",nextToken);
+        await fetchBooks()
+    }
+    
+    console.log("hgfhfghfgh",books);
+
+
     return ( 
         <> 
         <div className="flex justify-end pr-56">
@@ -94,9 +110,20 @@ const MyBooks = () => {
         </label>
         </div>
             {books && books.length > 0 ? (
-             books.map((book) => (
+            <InfiniteScroll
+            dataLength = {50}
+            hasMore={true} 
+            next={fetchMoreData}
+            // endMessage ={
+            //   <p className="text-center text-3xl font-semibold"> Yay! You have seen it all </p>
+            // }
+            loader={ 
+             <h4 className="text-center text-3xl font-semibold	">Loading...</h4>
+           }
+         > 
+            {books.map((book, index) => (
                     <MyBooksItem 
-                    key={book.book.etag}
+                    key={index}
                     bookid={book.book.id}
                     id={book.id}
                     title={book.book.title}
@@ -111,7 +138,8 @@ const MyBooks = () => {
                     addComment={addComment}
                     deleteComment = {deleteComment}
                     />
-             ))   
+             ))}
+             </InfiniteScroll>      
             ) :  
             (
                 <div>

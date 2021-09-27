@@ -2,7 +2,9 @@
 // this is an auto generated file. This will be overwritten
 
 export const getBook = /* GraphQL */ `
-  query GetBook($id: ID!) {
+  query GetBook($id: ID!
+              $limit: Int
+  ) {
     getBook(id: $id) {
       id
       title
@@ -195,16 +197,44 @@ export const listBookComments = /* GraphQL */ `
   }
 `;
 export const getUser = /* GraphQL */ `
-  query GetUser($id: ID!) {
+  query GetUser(
+    $id: ID!
+    $limit: Int
+    $nextToken: String
+  ) {
     getUser(id: $id) {
       id
-      book {
+      book(limit: $limit, nextToken: $nextToken) {
+        scannedCount
+        nextToken
         items {
           id
           createdAt
           updatedAt
+          book {
+          title
+          id
+          authors
+          createdAt
+          description
+          etag
+          image
+          link
+          published
+          updatedAt
+          bookComments {
+            items {
+              comment
+              userName
+              userId
+              updatedAt
+              id
+              createdAt
+            }
+          }
         }
-        nextToken
+        }
+        
       }
       createdAt
       updatedAt
