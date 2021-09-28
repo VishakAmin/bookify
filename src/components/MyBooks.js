@@ -1,41 +1,49 @@
 import {API, graphqlOperation } from 'aws-amplify'
 import React,{useEffect, useState, useCallback} from 'react'
 import { toast } from 'react-toastify';
-
-import { createBookComment, deleteBookComment, deleteUserBooks } from '../graphql/mutations'
-import { getUser, listUsers } from '../graphql/queries'
-import { useAuth } from './contexts/AuthContext';
-import MyBooksItem from './MyBooksItem'
 import InfiniteScroll from "react-infinite-scroll-component";
 
+import { createBookComment, deleteBookComment, deleteUserBooks } from '../graphql/mutations'
+import { useAuth } from './contexts/AuthContext';
+import MyBooksItem from './MyBooksItem'
+import {useFetchhook} from '../hooks/useFetchHook';
+
+
 const MyBooks = () => {
-    const [books, setBooks] = useState([])
+  
     const [nextToken, setNextToken] = useState(null)
     const [sortType, setSortType] = useState("")
     const {user} = useAuth()
+    const [res, fetchBooks] = useFetchhook(user.attributes.sub, nextToken)
+    const [books, setBooks] = useState([])
 
-    const fetchBooks = useCallback(async () => {
+    useEffect(() => { setBooks(book => [...book, ...res.books]) }, [res.books])
+
+    // console.log("In Mybooks",fetchBooks());
+
+    // const fetchBooks = useCallback(async () => {
       
-        try{
-              const bookData = await API.graphql(graphqlOperation(getUser,{
-                  id :  user.attributes.sub,
-                  limit:3,
-                  nextToken: nextToken
-                 }
-                 ))
-                console.log(bookData.data.getUser.book.items)
-                setBooks(books => [...books,...bookData.data.getUser.book.items])
-                setNextToken(bookData.data.getUser.book.nextToken)
-                console.log(bookData.data.getUser.book.nextToken);               
-            }
-        catch(err){
-            console.log("Error fetching...", err);
-        }
-    },[user.attributes.sub])
+    //     try{
+    //           const bookData = await API.graphql(graphqlOperation(getUser,{
+    //               id :  user.attributes.sub,
+    //               limit:3,
+    //               nextToken: nextToken
+    //              }
+    //              ))
+    //             console.log(bookData.data.getUser.book.items)
+    //             setBooks(books => [...books,...bookData.data.getUser.book.items])
+    //             setNextToken(bookData.data.getUser.book.nextToken)
+    //             console.log(bookData.data.getUser.book.nextToken);               
+    //         }
+    //     catch(err){
+    //         console.log("Error fetching...", err);
+    //     }
+    // },[user.attributes.sub])
 
-    useEffect(() => {
-        fetchBooks()
-     },[fetchBooks])
+    // useEffect(() => {
+    //     fetchBooks()
+        
+    //  },[fetchBooks])
 
 
     
@@ -48,7 +56,7 @@ const MyBooks = () => {
 
         // console.log(sortArray);
         if(sortType === "oldest"){
-            setBooks(books.reverse())             
+            res.books.reverse()           
         }
     }
 
@@ -60,8 +68,9 @@ const MyBooks = () => {
                         id:id
                     }
             }))
-            fetchBooks()
+            setBooks(books.filter(book => book.id !== id))
             toast.error(`${title} Deleted Successfully`);
+            console.log("INSIDE Remve",books);
         }
         catch(err){
             console.log("Error in deleting",err);
@@ -86,16 +95,20 @@ const MyBooks = () => {
                     id:id
             }
         }))
-        fetchBooks()       
+         console.log(books.map(book =>  (
+            book.bookComments.items.map(comments => (
+            comments.id
+        )))))
+       // setBooks(books.book.bookComments.items.filter(comment => comment.id !== id))     
     }
     
     const fetchMoreData = async () => {
-        console.log("FETCHMOREDATA",nextToken);
-        await fetchBooks()
+        setNextToken(res.nextNextToken)
+        console.log("FETCHMOREDATA",res);
+        console.log("FETCHMOREDATA ",nextToken);
     }
     
-    console.log("hgfhfghfgh",books);
-
+    console.log(books);
 
     return ( 
         <> 
@@ -109,17 +122,17 @@ const MyBooks = () => {
         </select>
         </label>
         </div>
-            {books && books.length > 0 ? (
+            {books && res.books.length > 0 ? (
             <InfiniteScroll
-            dataLength = {50}
-            hasMore={true} 
-            next={fetchMoreData}
-            // endMessage ={
-            //   <p className="text-center text-3xl font-semibold"> Yay! You have seen it all </p>
-            // }
-            loader={ 
-             <h4 className="text-center text-3xl font-semibold	">Loading...</h4>
-           }
+                dataLength = {books.length}
+                hasMore={books.length < 8} 
+                next={fetchMoreData}
+                endMessage ={
+                  <p className="text-center text-3xl font-semibold"> Yay! You have seen it all </p>
+                }
+                loader={ 
+                <h4 className="text-center text-3xl font-semibold	">Loading...</h4>
+            }
          > 
             {books.map((book, index) => (
                     <MyBooksItem 

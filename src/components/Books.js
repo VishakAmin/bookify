@@ -142,8 +142,8 @@ const Books = () => {
            {
              bookData && totalItems ? (
              <InfiniteScroll
-             dataLength = {totalItems}
-             hasMore={true} 
+             dataLength = {bookData.length}
+             hasMore={bookData.length < totalItems} 
              next={fetchMoreData}
              endMessage ={
                <p className="text-center text-3xl font-semibold"> Yay! You have seen it all </p>
@@ -156,17 +156,17 @@ const Books = () => {
             {(
                 bookData.map((item, index) => (
                   <BookItem 
-                   key={index}
-                   title = {item.volumeInfo.title}
-                   authors = {item.volumeInfo.authors}
-                   description={item.volumeInfo.description}
-                   published ={item.volumeInfo.publishedDate}
-                   image={item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.thumbnail : "N/A"}
-                   link={item.volumeInfo.previewLink}
-                   etag={item.id}
-                   removeBook={removeBook}
-                   addBook={addBooks}      
-                   bookAdded ={books && books.map(book => book.book.title )}
+                    key={index}
+                    title = {item.volumeInfo.title}
+                    authors = {item.volumeInfo.authors}
+                    description={item.volumeInfo.description}
+                    published ={item.volumeInfo.publishedDate}
+                    image={item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.thumbnail : "N/A"}
+                    link={item.volumeInfo.previewLink}
+                    etag={item.id}
+                    removeBook={removeBook}
+                    addBook={addBooks}      
+                    bookAdded ={books && books.map(book => book.book.title )}
                  />
              ))
             ) 
