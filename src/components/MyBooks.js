@@ -7,11 +7,12 @@ import { createBookComment, deleteBookComment, deleteUserBooks } from '../graphq
 import { useAuth } from './contexts/AuthContext';
 import MyBooksItem from './MyBooksItem'
 import {useFetchhook} from '../hooks/useFetchHook';
+import { comment } from 'postcss';
 
 
 const MyBooks = () => {
   
-    const [nextToken, setNextToken] = useState(null)
+    const [nextToken, setNextToken] = useState(undefined)
     const [sortType, setSortType] = useState("")
     const {user} = useAuth()
     const [res, fetchBooks] = useFetchhook(user.attributes.sub, nextToken)
@@ -78,28 +79,50 @@ const MyBooks = () => {
     }
 
     const addComment = async(id, comment ) => {
-       await API.graphql(graphqlOperation(createBookComment, 
+       const addCommentresponse = await API.graphql(graphqlOperation(createBookComment, 
           { input:{
               comment:comment,
               bookCommentCommentBookId: id,
               userId: user.attributes.sub,
               userName : user.username
       }}))
-      fetchBooks()
+        const newComment = {
+                comment: comment,
+                createdAt: addCommentresponse.data.createBookComment.createdAt,
+                id: addCommentresponse.data.createBookComment.id,
+                updatedAt:addCommentresponse.data.createBookComment.updatedAt,
+                userId: user.attributes.sub,
+                userName : user.username
+            }  
+            console.log(books.map(book => book.book.bookComments.items.push(newComment)));
+            console.log(addCommentresponse.data.createBookComment);
+
       }
       
-    const deleteComment = async(id) => {
-       await API.graphql(graphqlOperation(deleteBookComment, 
-            { 
-                input:{
-                    id:id
-            }
-        }))
-         console.log(books.map(book =>  (
-            book.bookComments.items.map(comments => (
-            comments.id
-        )))))
+    const deleteComment = async(id, bookId) => {
+    //    await API.graphql(graphqlOperation(deleteBookComment, 
+    //         { 
+    //             input:{
+    //                 id:id
+    //         }
+    //  
+          console.log("CHECK", id);
+        //   console.log((books.filter(book =>  (
+        //   book.book.bookComments.items.filter(bc => bc.id !== id)
+        //  ))
+        // ))
+
+        //setBooks(books.filter(book => book.id !== id))
+    //    console.log(books.book.bookComments.forEach(function(items) {
+    //       items = items.filter(bc => bc.id !== id)  
+    //    }))
+
+    
+//       console.log("NEW",newArray);
        // setBooks(books.book.bookComments.items.filter(comment => comment.id !== id))     
+
+    console.log(books.forEach(book => book.book.bookComments.items.some(bc => bc.id !== id)));
+
     }
     
     const fetchMoreData = async () => {
@@ -108,7 +131,7 @@ const MyBooks = () => {
         console.log("FETCHMOREDATA ",nextToken);
     }
     
-    console.log(books);
+    console.log("sasasa",books);
 
     return ( 
         <> 
@@ -122,10 +145,10 @@ const MyBooks = () => {
         </select>
         </label>
         </div>
-            {books && res.books.length > 0 ? (
+            {books && books.length > 0 ? (
             <InfiniteScroll
                 dataLength = {books.length}
-                hasMore={books.length < 8} 
+                hasMore={res.nextNextToken === null ? false : true } 
                 next={fetchMoreData}
                 endMessage ={
                   <p className="text-center text-3xl font-semibold"> Yay! You have seen it all </p>
