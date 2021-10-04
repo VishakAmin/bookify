@@ -8,6 +8,8 @@ import SearchBox from './UI/SearchBox'
 import { listBooks, listUsers } from '../graphql/queries'
 import { createBook, createUserBooks, deleteUserBooks } from '../graphql/mutations'
 import { useAuth } from './contexts/AuthContext';
+import InfiniteScroll from "react-infinite-scroll-component";
+
 
 function reducer(state, action) {
   switch (action.type) {
@@ -19,18 +21,24 @@ function reducer(state, action) {
 }
 
 const Books = () => {
-    const [bookData, setbookData] = useState()
+    const [bookData, setbookData] = useState([])
+    const [totalItems, setTotalItems] = useState()
     const [books, dispatch] = useReducer(reducer,[])
     const [searchKey, setSearchKey] = useState()
-    const {user} = useAuth()
+    const [startIndex, setStartIndex] = useState(0)
+    const [hasMore, setHasMore] = useState(true)
 
+    const {user} = useAuth()
     const userId = user.attributes.sub
 
     const handleSubmit = () => {
-      axios.get(`https://www.googleapis.com/books/v1/volumes?q=${searchKey}&key=${process.env.REACT_APP_API_KEY}`) 
+      console.log("Inside",startIndex);
+      axios.get(`https://www.googleapis.com/books/v1/volumes?q=${searchKey}&maxResults=12&startIndex=${startIndex}&key=${process.env.REACT_APP_API_KEY}`) 
         .then((response) => {
-          console.log(response.data.items);
-          setbookData(response.data.items)           
+          console.log(response.data);
+          console.log(startIndex)
+          setbookData(bookData => [...bookData,...response.data.items])   
+          setTotalItems(response.data.totalItems)
       })
       .catch((error) => {
       console.log(error)
@@ -108,37 +116,73 @@ const Books = () => {
         fetchBooks()
     },[fetchBooks])
 
+    const fetchMoreData = async () => {
+         setStartIndex(startIndex+12)
+         handleSubmit()
+    }
+
+    const onSearchClick = async () => {
+      await setStartIndex(0)
+      await setbookData([])
+      await handleSubmit()
+    }
+
+    const handleChange = (e) => {
+     setSearchKey(e.target.value)
+     setStartIndex(prev => 0)
+    }
+    
+    console.log(bookData,startIndex,totalItems);
+    
     return (
         <div>
            <div className="flex justify-center">
-             <SearchBox  onChange={(e) => (setSearchKey(e.target.value))} onClick={handleSubmit}/>             
+             <SearchBox  onChange={handleChange} onClick={onSearchClick}/>             
            </div>
-           <div className= "flex flex-wrap content-start">     
-            {bookData ? (
-                bookData.map((item) => (
+           {
+             bookData && totalItems ? (
+             <InfiniteScroll
+             dataLength = {bookData.length}
+             hasMore={bookData.length < totalItems} 
+             next={fetchMoreData}
+             endMessage ={
+               <p className="text-center text-3xl font-semibold"> Yay! You have seen it all </p>
+             }
+             loader={ 
+              <h4 className="text-center text-3xl font-semibold	">Loading...</h4>
+            }
+          > 
+           <div className= "flex flex-wrap content-start">                
+            {(
+                bookData.map((item, index) => (
                   <BookItem 
-                   key={item.id}
-                   title = {item.volumeInfo.title}
-                   authors = {item.volumeInfo.authors}
-                   description={item.volumeInfo.description}
-                   published ={item.volumeInfo.publishedDate}
-                   image={item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.thumbnail : "N/A"}
-                   link={item.volumeInfo.previewLink}
-                   etag={item.id}
-                   removeBook={removeBook}
-                   addBook={addBooks}      
-                   bookAdded ={books && books.map(book => book.book.title )}
+                    key={index}
+                    title = {item.volumeInfo.title}
+                    authors = {item.volumeInfo.authors}
+                    description={item.volumeInfo.description}
+                    published ={item.volumeInfo.publishedDate}
+                    image={item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.thumbnail : "N/A"}
+                    link={item.volumeInfo.previewLink}
+                    etag={item.id}
+                    removeBook={removeBook}
+                    addBook={addBooks}      
+                    bookAdded ={books && books.map(book => book.book.title )}
                  />
              ))
-            ) :
+            ) 
+           }
+        </div>
+        </InfiniteScroll>
+        )
+           :
             (
             <div className= "pl-96 pt-10">
                 <p className="font-bold	text-4xl text-gray-600" > All the books in the universe now under your finger tips..!!</p>
                 </div>
             )
           }
-            </div>            
-        </div>
+            </div>     
+          
     )
 }
 
