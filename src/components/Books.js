@@ -122,9 +122,9 @@ const Books = () => {
     }
 
     const onSearchClick = async () => {
-      await setStartIndex(0)
-      await setbookData([])
-      await handleSubmit()
+       setStartIndex(0)
+       setbookData([])
+       handleSubmit()
     }
 
     const handleChange = (e) => {
@@ -132,7 +132,7 @@ const Books = () => {
      setStartIndex(prev => 0)
     }
     
-    console.log(bookData,startIndex,totalItems);
+ //   console.log(bookData,startIndex,totalItems);
     
     return (
         <div>
