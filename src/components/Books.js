@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 
 import BookItem from './BookItem'
 import SearchBox from './UI/SearchBox'
-import { listBooks, listUsers } from '../graphql/queries'
+import { getUser, listBooks, listUsers } from '../graphql/queries'
 import { createBook, createUserBooks, deleteUserBooks } from '../graphql/mutations'
 import { useAuth } from './contexts/AuthContext';
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -47,10 +47,11 @@ const Books = () => {
 
       const fetchBooks = useCallback(async () => {
         try{
-            const userData = await API.graphql(graphqlOperation(listUsers,{
-              filter : { id : {eq: user.attributes.sub } }
+            const userData = await API.graphql(graphqlOperation(getUser,{
+               id : user.attributes.sub 
             }))
-            dispatch({type:"fetch-books", payload:userData.data.listUsers.items[0].book.items})
+            console.log(userData.data.getUser.book.items);
+            dispatch({type:"fetch-books", payload:userData.data.getUser.book.items})
         }
         catch(err){
             console.log("Error fetching", err);

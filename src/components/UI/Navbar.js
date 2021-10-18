@@ -1,5 +1,7 @@
-import React from 'react'
+import { Storage, API, graphqlOperation } from 'aws-amplify'
+import React,{useState, useEffect} from 'react'
 import {useHistory,Link} from "react-router-dom" 
+import { getPicture } from '../../graphql/queries'
 
 
 import { useAuth } from '../contexts/AuthContext'
@@ -7,6 +9,8 @@ import { useAuth } from '../contexts/AuthContext'
 const Navbar = () => {
     
   const { logout,  user} = useAuth()
+  const [imageData, setImageData] = useState()
+  const [image, setImage] = useState("")
 
     const history = useHistory();
     const onClickHandler = async () => {
@@ -19,7 +23,27 @@ const Navbar = () => {
           }
     }
 
-  
+    useEffect(() =>  {
+      console.log(user);
+      const getPhoto = async () => {
+        user && API.graphql(graphqlOperation(getPicture,{
+          id:  user.attributes.sub
+        })).then(response => {
+          console.log(response);
+          setImageData(response.data.getPicture.file)
+        })
+     
+      }
+     
+      getPhoto()
+    },[user])
+    
+    imageData && Storage.get(imageData.key).then(response => {
+      setImage(response)
+    })
+   
+  console.log(image);
+
     return (
     <div className="w-full text-gray-700 bg-white dark-mode:text-gray-200 dark-mode:bg-gray-800">
           <div x-data="{ open: false }" className="flex flex-col max-w-screen-xl px-4 mx-auto md:items-center md:justify-between md:flex-row md:px-6 lg:px-8">
@@ -33,6 +57,7 @@ const Navbar = () => {
                   <Link  className="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" to="/">Home</Link>
                   <Link  className="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" to="/mybooks">Books</Link>
                   <button className="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" onClick={onClickHandler}>Logout</button>
+                  <img className="inline object-cover ml-3  w-10 h-10 rounded-full" src={image} alt="Profile"/>
                 </>
               :
               <>

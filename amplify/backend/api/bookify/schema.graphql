@@ -30,3 +30,14 @@ type User @model {
   book : [UserBooks] @connection(name: "UserBook")
 }
  
+type S3Object {
+  bucket : String!
+  region : String!
+  key : String!
+} 
+type Picture @model {
+  id : String!
+
+  # Reference the S3 Object field
+  file : S3Object
+} 

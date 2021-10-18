@@ -1,10 +1,8 @@
-import {API, graphqlOperation } from 'aws-amplify'
 import React,{useEffect, useState, useContext} from 'react'
 import { toast } from 'react-toastify';
 import InfiniteScroll from "react-infinite-scroll-component";
 import _ from "lodash";
 
-import { createBookComment, deleteBookComment, deleteUserBooks } from '../graphql/mutations'
 import { useAuth } from './contexts/AuthContext';
 import MyBooksItem from './MyBooksItem'
 import {useFetchhook,removeBooksApi, deleteCommentApi, createCommentApi} from '../hooks/apis';
@@ -19,12 +17,18 @@ const MyBooks = () => {
     const res = useFetchhook(user.attributes.sub, nextToken)
     const [books, setBooks] = useState([])
 
+    console.log(res);
     useEffect(() => { 
         setBooks(book => [...book, ...res.books]) 
         dispatch({type: "FETCH_BOOKS", payload:res.books})
     }, [res.books])
 
-  
+    useEffect(() => {
+          return ( () => {
+            dispatch({type: "INITIALIZE_BOOK"})
+          })   
+    },[])
+ 
     const handleSort = (e) => {
         setSortType(e.target.value)
         // console.log(sortType);
@@ -118,7 +122,7 @@ const MyBooks = () => {
         console.log("FETCHMOREDATA ",nextToken);
     }
     
-    console.log("sasasa",state.books);
+    console.log("sasasa",state);
 
     return ( 
         <> 
