@@ -4,7 +4,7 @@
 ### All the books in the universe now under your finger tips..!!
 ### Bookify is an web app where you can find any book by searching by its title and one can add<br> books to the list to read it later. People can comment too and remove the books after reading.
 
-### Live Demo [Click here](https://bookify-2021.netlify.app/signin)
+### Live Demo [Click here](https://bookify-2021.netlify.app)
 
 # Tech Stack
 
