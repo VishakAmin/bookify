@@ -194,7 +194,6 @@ export const listBookComments = /* GraphQL */ `
     }
   }
 `;
-
 export const getUser = /* GraphQL */ `
   query GetUser(
     $id: ID!

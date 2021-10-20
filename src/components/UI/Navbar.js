@@ -74,3 +74,48 @@ const Navbar = () => {
 
 
 export default Navbar
+export const getUser = /* GraphQL */ `
+  query GetUser(
+    $id: ID!
+    $limit: Int
+    $nextToken: String
+  ) {
+    getUser(id: $id) {
+      id
+      book(limit: $limit, nextToken: $nextToken) {
+
+        nextToken
+        items {
+          id
+          createdAt
+          updatedAt
+          book {
+          title
+          id
+          authors
+          createdAt
+          description
+          etag
+          image
+          link
+          published
+          updatedAt
+          bookComments {
+            items {
+              comment
+              userName
+              userId
+              updatedAt
+              id
+              createdAt
+            }
+          }
+        }
+        }
+        
+      }
+      createdAt
+      updatedAt
+    } 
+  }
+`;
