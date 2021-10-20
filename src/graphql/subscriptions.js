@@ -352,3 +352,45 @@ export const onDeleteUser = /* GraphQL */ `
     }
   }
 `;
+export const onCreatePicture = /* GraphQL */ `
+  subscription OnCreatePicture {
+    onCreatePicture {
+      id
+      file {
+        bucket
+        region
+        key
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdatePicture = /* GraphQL */ `
+  subscription OnUpdatePicture {
+    onUpdatePicture {
+      id
+      file {
+        bucket
+        region
+        key
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeletePicture = /* GraphQL */ `
+  subscription OnDeletePicture {
+    onDeletePicture {
+      id
+      file {
+        bucket
+        region
+        key
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;

@@ -2,9 +2,7 @@
 // this is an auto generated file. This will be overwritten
 
 export const getBook = /* GraphQL */ `
-  query GetBook($id: ID!
-              $limit: Int
-  ) {
+  query GetBook($id: ID!) {
     getBook(id: $id) {
       id
       title
@@ -196,6 +194,7 @@ export const listBookComments = /* GraphQL */ `
     }
   }
 `;
+
 export const getUser = /* GraphQL */ `
   query GetUser(
     $id: ID!
@@ -205,7 +204,7 @@ export const getUser = /* GraphQL */ `
     getUser(id: $id) {
       id
       book(limit: $limit, nextToken: $nextToken) {
-        scannedCount
+
         nextToken
         items {
           id
@@ -249,40 +248,49 @@ export const listUsers = /* GraphQL */ `
   ) {
     listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
-      id
-      createdAt
-      updatedAt
-      book {
-        items {
-          createdAt
-          updatedAt
-          id
-          book {
-            authors
-            createdAt
-            description
-            id
-            image
-            link
-            published
-            title
-            etag
-            updatedAt
-            bookComments {
-              items {
-                comment
-                userId
-                userName
-                createdAt
-                id
-                updatedAt
-              }
-            }
-          }
+        id
+        book {
+          nextToken
         }
+        createdAt
+        updatedAt
       }
-    }
+      nextToken
     }
   }
 `;
-  
+export const getPicture = /* GraphQL */ `
+  query GetPicture($id: ID!) {
+    getPicture(id: $id) {
+      id
+      file {
+        bucket
+        region
+        key
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listPictures = /* GraphQL */ `
+  query ListPictures(
+    $filter: ModelPictureFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listPictures(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        file {
+          bucket
+          region
+          key
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;

@@ -11,10 +11,12 @@ import Navbar from './components/UI/Navbar';
 import { AuthProvider } from './components/contexts/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import MyBooks from './components/MyBooks';
+import { BookProvider } from './components/contexts/BookContext';
 
 function App() {
   return (
     <AuthProvider>
+      <BookProvider>
     <Router>
     <Navbar/>
     <ToastContainer/>
@@ -32,6 +34,7 @@ function App() {
         </Route>
         </Switch>
      </Router>
+     </BookProvider>
      </AuthProvider>
   );
 }

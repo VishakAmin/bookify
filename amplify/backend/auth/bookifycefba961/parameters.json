@@ -1,6 +1,6 @@
 {
     "identityPoolName": "bookifycefba961_identitypool_cefba961",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "bookifcefba961",
     "userPoolName": "bookifycefba961_userpool_cefba961",
     "autoVerifiedAttributes": [

@@ -1,52 +1,34 @@
-import {API, graphqlOperation } from 'aws-amplify'
-import React,{useEffect, useState, useCallback} from 'react'
+import React,{useEffect, useState, useContext} from 'react'
 import { toast } from 'react-toastify';
 import InfiniteScroll from "react-infinite-scroll-component";
+import _ from "lodash";
 
-import { createBookComment, deleteBookComment, deleteUserBooks } from '../graphql/mutations'
 import { useAuth } from './contexts/AuthContext';
 import MyBooksItem from './MyBooksItem'
-import {useFetchhook} from '../hooks/useFetchHook';
+import {useFetchhook,removeBooksApi, deleteCommentApi, createCommentApi} from '../hooks/apis';
+import { BookContext } from '../components/contexts/BookContext';
 
 
 const MyBooks = () => {
-  
-    const [nextToken, setNextToken] = useState(null)
+    const [state, dispatch] = useContext(BookContext)
+    const [nextToken, setNextToken] = useState(undefined)
     const [sortType, setSortType] = useState("")
     const {user} = useAuth()
-    const [res, fetchBooks] = useFetchhook(user.attributes.sub, nextToken)
+    const res = useFetchhook(user.attributes.sub, nextToken)
     const [books, setBooks] = useState([])
 
-    useEffect(() => { setBooks(book => [...book, ...res.books]) }, [res.books])
+    console.log(res);
+    useEffect(() => { 
+        setBooks(book => [...book, ...res.books]) 
+        dispatch({type: "FETCH_BOOKS", payload:res.books})
+    }, [res.books])
 
-    // console.log("In Mybooks",fetchBooks());
-
-    // const fetchBooks = useCallback(async () => {
-      
-    //     try{
-    //           const bookData = await API.graphql(graphqlOperation(getUser,{
-    //               id :  user.attributes.sub,
-    //               limit:3,
-    //               nextToken: nextToken
-    //              }
-    //              ))
-    //             console.log(bookData.data.getUser.book.items)
-    //             setBooks(books => [...books,...bookData.data.getUser.book.items])
-    //             setNextToken(bookData.data.getUser.book.nextToken)
-    //             console.log(bookData.data.getUser.book.nextToken);               
-    //         }
-    //     catch(err){
-    //         console.log("Error fetching...", err);
-    //     }
-    // },[user.attributes.sub])
-
-    // useEffect(() => {
-    //     fetchBooks()
-        
-    //  },[fetchBooks])
-
-
-    
+    useEffect(() => {
+          return ( () => {
+            dispatch({type: "INITIALIZE_BOOK"})
+          })   
+    },[])
+ 
     const handleSort = (e) => {
         setSortType(e.target.value)
         // console.log(sortType);
@@ -60,55 +42,87 @@ const MyBooks = () => {
         }
     }
 
-    const removeBooks = async (id,title) => {
+    const removeBooks =  (id,title) => {
+
         try{
-            await API.graphql(graphqlOperation(deleteUserBooks, 
-                {
-                    input:{
-                        id:id
-                    }
-            }))
+            removeBooksApi(id, title)
             setBooks(books.filter(book => book.id !== id))
-            toast.error(`${title} Deleted Successfully`);
-            console.log("INSIDE Remve",books);
+            dispatch({type: "REMOVE_BOOKS", payload:id})  
+            toast.error(`${title} Deleted Successfully`)
         }
         catch(err){
-            console.log("Error in deleting",err);
+            console.log(err);
         }
     }
-
+ 
     const addComment = async(id, comment ) => {
-       await API.graphql(graphqlOperation(createBookComment, 
-          { input:{
-              comment:comment,
-              bookCommentCommentBookId: id,
-              userId: user.attributes.sub,
-              userName : user.username
-      }}))
-      fetchBooks()
-      }
-      
-    const deleteComment = async(id) => {
-       await API.graphql(graphqlOperation(deleteBookComment, 
-            { 
-                input:{
-                    id:id
+    
+    try{
+        createCommentApi(id, comment, user.attributes.sub,user.username).then(
+            response => {
+                const newComment = {
+                    comment: comment,
+                    createdAt: response.data.createBookComment.createdAt,
+                    id: response.data.createBookComment.id,
+                    updatedAt:response.data.createBookComment.updatedAt,
+                    userId: user.attributes.sub,
+                    userName : user.username
+                }  
+
+                const newArray = [...books]
+                newArray.forEach(book => {
+                  if (book.book.id === id) {
+                      book.book.bookComments.items.push(newComment)
+                  }  
+                })
+                console.log(response.data.createBookComment);
+                setBooks(newArray)
             }
-        }))
-         console.log(books.map(book =>  (
-            book.bookComments.items.map(comments => (
-            comments.id
-        )))))
-       // setBooks(books.book.bookComments.items.filter(comment => comment.id !== id))     
+         )
+    }
+    catch(err){
+            console.log(err);
+        }      
+    }
+      
+    const deleteComment = async(id, bookId) => {
+        try{
+            deleteCommentApi(id)
+            const booksCopy = _.cloneDeep(books)
+                const bookIndex = booksCopy.findIndex(book => book.book.id === bookId)
+                console.log(bookIndex);
+                const commentIndex = booksCopy[bookIndex].book.bookComments.items.findIndex(item => item.id === id);            
+                console.log(commentIndex);            
+                booksCopy[bookIndex].book.bookComments.items.splice(commentIndex, 1)
+                console.log(booksCopy);
+                setBooks(booksCopy)
+                toast.error(`Comment Deleted Successfully`)
+        }
+        catch(err){
+            console.log(err);
+        }
+
+          console.log("CHECK", id);
+      
+    // TODO  How to actually filter the state
+
+             // deepclone
+             // Find the index using Findindex 
+            //my method 
+            // const newArray = [...books]
+            // newArray.forEach(book => {
+            //     book.book.bookComments.items = book.book.bookComments.items.filter(bc => bc.id !== id)
+            // })
+            // setBooks(newArray)
     }
     
-    const fetchMoreData = async () => {
-        setNextToken(res.nextNextToken)
+    const fetchMoreData =  () => {
         console.log("FETCHMOREDATA",res);
+        setNextToken(res.nextNextToken)
         console.log("FETCHMOREDATA ",nextToken);
     }
     
-    console.log(books);
+    console.log("sasasa",state);
 
     return ( 
         <> 
@@ -122,10 +136,10 @@ const MyBooks = () => {
         </select>
         </label>
         </div>
-            {books && res.books.length > 0 ? (
+            {books && books.length > 0 ? (
             <InfiniteScroll
                 dataLength = {books.length}
-                hasMore={books.length < 8} 
+                hasMore={!(res.nextNextToken === null) } 
                 next={fetchMoreData}
                 endMessage ={
                   <p className="text-center text-3xl font-semibold"> Yay! You have seen it all </p>

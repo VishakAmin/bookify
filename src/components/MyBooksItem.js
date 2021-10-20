@@ -15,7 +15,7 @@ const MyBooksItem = ({title, authors, comments ,description, published, image, l
     }
     
     const deleteBookComment = (id) => {
-        deleteComment(id)
+        deleteComment(id,bookid)
     }
 
     return (
