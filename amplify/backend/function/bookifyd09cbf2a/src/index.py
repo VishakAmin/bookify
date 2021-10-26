@@ -1,15 +1,20 @@
 import json
 import boto3
-
+import uuid
 
 # s3 = boto3.resource('s3')
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table("UserBooks-hckcc2a5pneojbzpxsmsbrgc3i-bookify")
 
 def handler(event, context):
-    response = table.get_item(
-        Key={
-            'id' : "e023ce1d-1c3d-4870-aced-7a96fbdfcc08"
+    
+    print("PARMETER",event["arguments"]["input"]["userBooksUserId"])
+    response = table.put_item(
+        Item={
+            'id':str(uuid.uuid4()), 
+            'userBooksUserId' : event["arguments"]["input"]["userBooksUserId"],
+            'userBooksBookId' : event["arguments"]["input"]["userBooksBookId"],
+            
         }
     )
     print(response)

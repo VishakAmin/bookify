@@ -36,7 +36,7 @@
       "function": {
         "bookifyd09cbf2a": {
           "deploymentBucketName": "amplify-bookify-bookify-173820-deployment",
-          "s3Key": "amplify-builds/bookifyd09cbf2a-676f69564176576a6e75-build.zip"
+          "s3Key": "amplify-builds/bookifyd09cbf2a-784663796b74626c2f6a-build.zip"
         }
       }
     }

@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import BookItem from './BookItem'
 import SearchBox from './UI/SearchBox'
 import { getUser, listBooks, listUsers } from '../graphql/queries'
-import { createBook, createUserBooks, deleteUserBooks } from '../graphql/mutations'
+import { createBook, createUserBooks, deleteUserBooks, userBooksHandler } from '../graphql/mutations'
 import { useAuth } from './contexts/AuthContext';
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -89,9 +89,9 @@ const Books = () => {
 
           console.log(allBooks);
           if(allBooks.data.listBooks.items.length > 0){
-            await API.graphql(graphqlOperation(createUserBooks, {
+            await API.graphql(graphqlOperation(userBooksHandler, {
               input: {
-                userBooksUserId: userId,
+                userBooksUserId: user.attributes.sub,
                 userBooksBookId: allBooks.data.listBooks.items[0].id
               }
             }))
@@ -99,9 +99,10 @@ const Books = () => {
           }
           else{
               const createBookResponse = await API.graphql(graphqlOperation(createBook, {input:book}))
-              await API.graphql(graphqlOperation(createUserBooks, {
+
+              await API.graphql(graphqlOperation(userBooksHandler, {
               input:{
-                userBooksUserId: userId,
+                userBooksUserId: user.attributes.sub,
                 userBooksBookId: createBookResponse.data.createBook.id
               }
             })) 
