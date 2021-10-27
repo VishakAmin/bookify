@@ -1,6 +1,11 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const userBooksHandler = /* GraphQL */ `
+  mutation UserBooksHandler($input: userBooksInput!) {
+    userBooksHandler(input: $input)
+  }
+`;
 export const createBook = /* GraphQL */ `
   mutation CreateBook(
     $input: CreateBookInput!

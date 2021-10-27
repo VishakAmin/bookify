@@ -48,9 +48,7 @@ const SignUp = () => {
               id : signupResponse.userSub 
             }
           }))
-       
-          console.log(data.profilePic[0]);
-          const file  = data.profilePic[0]
+        const file  = data.profilePic[0]
 
           Storage.put(file.name, file).then((result) => {
             const image  = {

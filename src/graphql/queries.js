@@ -194,7 +194,6 @@ export const listBookComments = /* GraphQL */ `
     }
   }
 `;
-
 export const getUser = /* GraphQL */ `
   query GetUser(
     $id: ID!
@@ -240,6 +239,7 @@ export const getUser = /* GraphQL */ `
     } 
   }
 `;
+
 export const listUsers = /* GraphQL */ `
   query ListUsers(
     $filter: ModelUserFilterInput

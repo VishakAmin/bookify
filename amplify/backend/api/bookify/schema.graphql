@@ -12,7 +12,7 @@ type Book @model {
 }
 
 type UserBooks @model {
-  id : ID!
+  id : String
   user : User @connection(name:"UserBook")
   book : Book @connection(name:"BookUser")
 }
@@ -35,9 +35,23 @@ type S3Object {
   region : String!
   key : String!
 } 
-type Picture @model {
+type Picture @model  {
   id : String!
 
   # Reference the S3 Object field
   file : S3Object
 } 
+
+type Mutation {
+  # function related to all the create project mutation operations
+  userBooksHandler(input: userBooksInput!): String
+    @function(name: "bookifyd09cbf2a-bookify")
+}
+
+
+# Change the function name.
+
+input userBooksInput {
+  userBooksUserId: String
+  userBooksBookId: String
+}
